@@ -68,7 +68,7 @@ namespace CRUD_Reservation_ClassLibrary
 
                 foreach (ReservationModel model in tempList[i].Availability)
                 {
-                    GetReservationDto reservationDto = new GetReservationDto(model.Kapacity, model.LastName, model.StartTime, model.EndTime, model.Date);
+                    GetReservationDto reservationDto = Mapper.Map(model);
                     getAllList[i].Availability.Add(reservationDto);
                 }
             }
@@ -84,7 +84,7 @@ namespace CRUD_Reservation_ClassLibrary
 
             ReservationModel getModel = tempList[tableId].Availability[reservationId];
 
-            GetReservationDto getReservationDto = new GetReservationDto(getModel.Kapacity, getModel.LastName, getModel.StartTime, getModel.EndTime, getModel.Date);
+            GetReservationDto getReservationDto = Mapper.Map(getModel);
 
             return getReservationDto;
         }
@@ -159,6 +159,10 @@ namespace CRUD_Reservation_ClassLibrary
             return isTimeValid;
         }
 
+
+        // ------------------------------------------------------------------
+        // Check, if query parametrs were given correctly
+        // ------------------------------------------------------------------
         public void IsRequestQueryValide(int tableId, int reservationId)
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
