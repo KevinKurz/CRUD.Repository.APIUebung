@@ -38,10 +38,8 @@ namespace CRUD.TableFunctions
         {   
             try
             {
-                CreateReservationDto? reservationDto = new CreateReservationDto();
-                
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
+                CreateReservationDto? reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
 
                 reservationDto.IsValid();
 
@@ -170,10 +168,8 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                UpdateReservationDto reservationDto = new UpdateReservationDto();
-
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
+                UpdateReservationDto? reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
 
                 _reservationRepository.IsRequestQueryValide(tableId, reservationId);
                 reservationDto.IsValid();

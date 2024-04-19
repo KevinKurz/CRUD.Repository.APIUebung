@@ -30,7 +30,7 @@ namespace CRUD.DataBank
             using (StreamReader reader = new StreamReader(filepath))
             {
                 string jsonData = reader.ReadToEnd();
-                List<TableModel> tables = JsonConvert.DeserializeObject<List<TableModel>>(jsonData);
+                List<TableModel> tables = JsonConvert.DeserializeObject<List<TableModel>>(jsonData)!;
                 return tables;
             }
         }

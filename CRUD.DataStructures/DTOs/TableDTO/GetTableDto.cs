@@ -1,5 +1,6 @@
 ﻿using CRUD.DataStructures.AttributeService;
 using CRUD.DataStructures.DTOs.ReservationDTO;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CRUD.DataStructures.DTOs.TableDTO
 {

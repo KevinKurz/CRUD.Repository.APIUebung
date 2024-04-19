@@ -95,7 +95,7 @@ namespace CRUD.Core.ReservationService
 
             foreach (TableModel tableDto in tempList)
             {
-                if (tableDto.Availability.Count != 0 && tableDto.Availability != null)
+                if (tableDto.Availability!.Count != 0 && tableDto.Availability != null)
                 {
                     tableDto.Availability.Clear();
                     jsonService.SaveListAsJsonFile(tempList);
