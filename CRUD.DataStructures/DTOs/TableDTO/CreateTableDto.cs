@@ -1,8 +1,9 @@
-﻿using CRUD.DataStructures.ReservationDTO;
+﻿using CRUD.DataStructures.AttributeService;
+using CRUD.DataStructures.DTOs.ReservationDTO;
 
-namespace CRUD.DataStructures.TableDTO
+namespace CRUD.DataStructures.DTOs.TableDTO
 {
-    public class GetTableDto : IDto
+    public class CreateTableDto : IDto
     {
         private int kapacity;
         public int Kapacity
@@ -18,14 +19,14 @@ namespace CRUD.DataStructures.TableDTO
             set { name = value; }
         }
 
-        private List<GetReservationDto> availability = new List<GetReservationDto>();
-        public List<GetReservationDto> Availability
+        private List<CreateReservationDto> availability = new List<CreateReservationDto>();
+        public List<CreateReservationDto> Availability
         {
             get { return availability; }
             set { availability = value; }
         }
 
-        public GetTableDto(int kapacityInput, string nameInput)
+        public CreateTableDto(int kapacityInput, string nameInput)
         {
             Kapacity = kapacityInput;
             Name = nameInput;

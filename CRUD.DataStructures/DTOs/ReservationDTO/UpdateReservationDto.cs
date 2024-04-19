@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CRUD.Validation.Attributes;
+using CRUD.DataStructures.AttributeService;
 
-namespace CRUD.DataStructures.ReservationDTO
+
+namespace CRUD.DataStructures.DTOs.ReservationDTO
 {
     public class UpdateReservationDto : IDto
     {
@@ -11,7 +12,6 @@ namespace CRUD.DataStructures.ReservationDTO
         private string? endTime;
         private string? date;
 
-        [Required]
         [Range(1, 10)]
         public int Kapacity
         {

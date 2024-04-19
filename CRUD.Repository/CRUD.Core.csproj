@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CRUD.DataBank\CRUD.DataBank.csproj" />
     <ProjectReference Include="..\CRUD.DataBase\CRUD.DataBase.csproj" />
-    <ProjectReference Include="..\CRUD.Interface\CRUD.Interface.csproj" />
   </ItemGroup>
 
 </Project>

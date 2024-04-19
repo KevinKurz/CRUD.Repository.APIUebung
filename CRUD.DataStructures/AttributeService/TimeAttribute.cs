@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CRUD.Validation.Attributes
+namespace CRUD.DataStructures.AttributeService
 {
     public class TimeValidationAttribute : ValidationAttribute
     {
@@ -19,3 +19,4 @@ namespace CRUD.Validation.Attributes
         }
     }
 }
+

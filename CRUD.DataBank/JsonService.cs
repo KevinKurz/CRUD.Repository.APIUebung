@@ -1,11 +1,9 @@
-﻿using CRUD.Database.DatabaseModel;
-using CRUD.Database.Model;
-using CRUD.DataStructures.TableDTO;
+﻿using CRUD.DataStructures.DataModel;
 using Newtonsoft.Json;
 
 namespace CRUD.DataBank
 {
-    public class JsonServiceWithMapperObjects
+    public class JsonService
     {
         private static List<TableModel> AvailableTables = new List<TableModel>()
         {

@@ -19,8 +19,8 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CRUD.Interface\CRUD.Interface.csproj" />
-    <ProjectReference Include="..\CRUD.Repository\CRUD.Repository.csproj" />
+    <ProjectReference Include="..\CRUD.DataStructures\CRUD.DataStructures.csproj" />
+    <ProjectReference Include="..\CRUD.Repository\CRUD.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CRUD.Validation.Attributes\CRUD.Validation.Attributes.csproj" />
+    <ProjectReference Include="..\CRUD.Validation.Attributes\CRUD.Attributes.csproj" />
   </ItemGroup>
 
 </Project>

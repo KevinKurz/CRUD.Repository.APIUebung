@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CRUD.Database.DatabaseModel
+namespace CRUD.DataStructures.DataModel
 {
     /// <summary>
     /// Defines the SQL Secondary Table, which is linked through an ForeignKey defined in the TableModelClass

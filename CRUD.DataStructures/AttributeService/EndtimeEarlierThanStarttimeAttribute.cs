@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CRUD.Validation.Attributes
+namespace CRUD.DataStructures.AttributeService
 {
     public class EndtimeEarlierThanStarttimeAttribute : ValidationAttribute
     {
 
         // Set the name of the property to compare
         private readonly string _comparisonProperty;
-        public EndtimeEarlierThanStarttimeAttribute(string comparisonProperty) 
-        { 
+        public EndtimeEarlierThanStarttimeAttribute(string comparisonProperty)
+        {
             _comparisonProperty = comparisonProperty;
         }
         public string GetErrorMessage() => "Your Starttime is not allowed to start after your Endtime";

@@ -1,6 +1,7 @@
-﻿using CRUD.DataStructures.ReservationDTO;
+﻿using CRUD.DataStructures.AttributeService;
+using CRUD.DataStructures.DTOs.ReservationDTO;
 
-namespace CRUD.DataStructures.TableDTO
+namespace CRUD.DataStructures.DTOs.TableDTO
 {
     public class UpdateTableDto : IDto
     {

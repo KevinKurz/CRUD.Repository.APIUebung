@@ -1,7 +1,6 @@
-﻿using CRUD.Database.DatabaseModel;
-using CRUD.DataStructures.ReservationDTO;
+﻿using CRUD.DataStructures.DTOs.ReservationDTO;
 
-namespace CRUD.DataBase.DataModel
+namespace CRUD.DataStructures.DataModel
 {
     public static class Mapper
     {

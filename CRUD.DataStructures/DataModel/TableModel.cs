@@ -1,8 +1,7 @@
-﻿using CRUD.Database.DatabaseModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CRUD.Database.Model
+namespace CRUD.DataStructures.DataModel
 {
     /// <summary>
     /// Defines the SQL Main Table

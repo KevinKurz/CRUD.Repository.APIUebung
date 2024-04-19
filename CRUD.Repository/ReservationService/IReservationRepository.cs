@@ -1,7 +1,7 @@
-﻿using CRUD.DataStructures.ReservationDTO;
-using CRUD.DataStructures.TableDTO;
+﻿using CRUD.DataStructures.DTOs.ReservationDTO;
+using CRUD.DataStructures.DTOs.TableDTO;
 
-namespace CRUD.Interface
+namespace CRUD.Core.ReservationService
 {
     public interface IReservationRepository
     {

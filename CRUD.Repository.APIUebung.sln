@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.Repository", "CRUD.Repository\CRUD.Repository.csproj", "{8DD42DEB-C453-4A07-8E18-2F4F40FE709A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.Interface", "CRUD.Interface\CRUD.Interface.csproj", "{8A9BDE01-D152-4473-8DDD-65DF88332483}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.Core", "CRUD.Repository\CRUD.Core.csproj", "{8DD42DEB-C453-4A07-8E18-2F4F40FE709A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.DataStructures", "CRUD.DataStructures\CRUD.DataStructures.csproj", "{99A11ADD-89D5-4715-9CB0-065257CC1865}"
 EndProject
@@ -13,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.DataBank", "CRUD.DataB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.DataBase", "CRUD.DataBase\CRUD.DataBase.csproj", "{99A39697-D4CB-4448-95FC-4887731A7D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUD.TableFunctions", "CRUD.TableFunctions\CRUD.TableFunctions.csproj", "{02E6BDA5-5671-421C-875A-5A86216F4FBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.Functions", "CRUD.TableFunctions\CRUD.Functions.csproj", "{02E6BDA5-5671-421C-875A-5A86216F4FBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUD.Validation.Attributes", "CRUD.Validation.Attributes\CRUD.Validation.Attributes.csproj", "{38156850-3E7B-47DC-9B73-EFEB2638ED76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD.xUnitTests", "CRUD.xUnitTests\CRUD.xUnitTests.csproj", "{78D9CCCB-E9B7-4B5A-A201-C526C46EF9F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		{8DD42DEB-C453-4A07-8E18-2F4F40FE709A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD42DEB-C453-4A07-8E18-2F4F40FE709A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD42DEB-C453-4A07-8E18-2F4F40FE709A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A9BDE01-D152-4473-8DDD-65DF88332483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A9BDE01-D152-4473-8DDD-65DF88332483}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A9BDE01-D152-4473-8DDD-65DF88332483}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A9BDE01-D152-4473-8DDD-65DF88332483}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99A11ADD-89D5-4715-9CB0-065257CC1865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{99A11ADD-89D5-4715-9CB0-065257CC1865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99A11ADD-89D5-4715-9CB0-065257CC1865}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,10 +41,10 @@ Global
 		{02E6BDA5-5671-421C-875A-5A86216F4FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02E6BDA5-5671-421C-875A-5A86216F4FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02E6BDA5-5671-421C-875A-5A86216F4FBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38156850-3E7B-47DC-9B73-EFEB2638ED76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38156850-3E7B-47DC-9B73-EFEB2638ED76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38156850-3E7B-47DC-9B73-EFEB2638ED76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38156850-3E7B-47DC-9B73-EFEB2638ED76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78D9CCCB-E9B7-4B5A-A201-C526C46EF9F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D9CCCB-E9B7-4B5A-A201-C526C46EF9F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D9CCCB-E9B7-4B5A-A201-C526C46EF9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D9CCCB-E9B7-4B5A-A201-C526C46EF9F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

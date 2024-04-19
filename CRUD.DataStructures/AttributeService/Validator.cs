@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CRUD.DataStructures;
 
-namespace CRUD.Repository
+namespace CRUD.DataStructures.AttributeService
 {
     public static class ValidationRepository
     {
-        public static void IsDtoValid(this IDto value)
+        public static void IsValid(this IDto value)
         {
             ValidationContext validationContext = new ValidationContext(value);
 

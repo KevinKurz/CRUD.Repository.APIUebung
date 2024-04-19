@@ -6,21 +6,20 @@ using System.Net;
 using HttpTriggerAttribute = Microsoft.Azure.Functions.Worker.HttpTriggerAttribute;
 using AuthorizationLevel = Microsoft.Azure.Functions.Worker.AuthorizationLevel;
 using Microsoft.OpenApi.Models;
-using CRUD.Interface;
 using Newtonsoft.Json;
 using Microsoft.Azure.Functions.Worker;
-using CRUD.DataStructures.ReservationDTO;
 using System.ComponentModel.DataAnnotations;
-using CRUD.DataStructures.TableDTO;
-using CRUD_Reservation_ClassLibrary;
-using CRUD.Repository;
+using CRUD.DataStructures.DTOs.TableDTO;
+using CRUD.DataStructures.DTOs.ReservationDTO;
+using CRUD.DataStructures.AttributeService;
+using CRUD.Core.ReservationService;
 
 namespace CRUD.TableFunctions
 {
     public class TableFunctions
     {
         private readonly IReservationRepository _reservationRepository;
-        public TableFunctions(ReservationRepository reservationRepository)
+        public TableFunctions(IReservationRepository reservationRepository)
         {
             _reservationRepository = reservationRepository;
         }
@@ -44,7 +43,7 @@ namespace CRUD.TableFunctions
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
 
-                reservationDto.IsDtoValid();
+                reservationDto.IsValid();
 
                 if (_reservationRepository.Create(reservationDto) == true)
                 {
@@ -177,7 +176,7 @@ namespace CRUD.TableFunctions
                 reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
 
                 _reservationRepository.IsRequestQueryValide(tableId, reservationId);
-                reservationDto.IsDtoValid();
+                reservationDto.IsValid();
 
                 if (_reservationRepository.UpdateById(tableId, reservationId, reservationDto) == true)
                 {

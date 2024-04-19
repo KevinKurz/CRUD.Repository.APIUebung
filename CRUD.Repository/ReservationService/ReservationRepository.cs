@@ -1,16 +1,13 @@
 ﻿using CRUD.DataBank;
-using CRUD.Database.DatabaseModel;
-using CRUD.Database.Model;
-using CRUD.DataBase.DataModel;
-using CRUD.DataStructures.ReservationDTO;
-using CRUD.DataStructures.TableDTO;
-using CRUD.Interface;
+using CRUD.DataStructures.DTOs.ReservationDTO;
+using CRUD.DataStructures.DTOs.TableDTO;
+using CRUD.DataStructures.DataModel;
 
-namespace CRUD_Reservation_ClassLibrary
+namespace CRUD.Core.ReservationService
 {
     public class ReservationRepository : IReservationRepository
     {
-        JsonServiceWithMapperObjects jsonService = new JsonServiceWithMapperObjects();
+        JsonService jsonService = new JsonService();
 
         // ------------------------------------------------------------------
         // Post Reservation
@@ -49,7 +46,7 @@ namespace CRUD_Reservation_ClassLibrary
             tempList[tableNumber].Availability.Add(createModel);
             jsonService.SaveListAsJsonFile(tempList);
 
-            return isTimeValid; 
+            return isTimeValid;
         }
 
         // ------------------------------------------------------------------
