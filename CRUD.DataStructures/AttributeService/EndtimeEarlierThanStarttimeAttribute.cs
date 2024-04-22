@@ -11,13 +11,14 @@ namespace CRUD.DataStructures.AttributeService
         {
             _comparisonProperty = comparisonProperty;
         }
-        public string GetErrorMessage() => "Your Starttime is not allowed to start after your Endtime";
+        public string GetErrorMessage() => "Your starttime is not allowed to start after your endtime";
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            // Reads the value of the property the attribute is attached to as a string and parse it to a TimeOnly
             TimeOnly startTime = TimeOnly.Parse((string)value);
 
-            // Gets the property and the value what is given with it
+            // Reads the value of the property given in the string parameter and cast it as a string
             string comparisonValue = (string)validationContext.ObjectType.GetProperty(_comparisonProperty).GetValue(validationContext.ObjectInstance);
 
             TimeOnly endTime = TimeOnly.Parse(comparisonValue);
