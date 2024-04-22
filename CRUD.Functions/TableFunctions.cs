@@ -151,6 +151,7 @@ namespace CRUD.Functions
         [Function("PUT_Table")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Table" })]
         [OpenApiParameter(name: "tableId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateTableDto), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
