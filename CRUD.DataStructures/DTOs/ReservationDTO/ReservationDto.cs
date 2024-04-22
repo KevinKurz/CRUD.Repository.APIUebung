@@ -3,7 +3,7 @@ using CRUD.DataStructures.AttributeService;
 
 namespace CRUD.DataStructures.DTOs.ReservationDTO
 {
-    public class GetReservationDto : IDto
+    public class ReservationDto : IDto
     {
         private int kapacity;
         private string? lastName;
@@ -53,7 +53,7 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
             get { return date; }
             set { date = value; }
         }
-        public GetReservationDto(int kapacityInput, string lastnameInput, string startTimeInput, string endTimeinput, string dateInput)
+        public ReservationDto(int kapacityInput, string lastnameInput, string startTimeInput, string endTimeinput, string dateInput)
         {
             kapacity = kapacityInput;
             lastName = lastnameInput;

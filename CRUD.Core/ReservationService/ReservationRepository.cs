@@ -12,11 +12,9 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Post Reservation
         // ------------------------------------------------------------------
-        public bool Create(CreateReservationDto reservation)
+        public void Create(CreateReservationDto reservation)
         {
             ReservationModel createModel = Mapper.Map(reservation);
-
-            bool isTimeValid = true;
 
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
@@ -34,56 +32,50 @@ namespace CRUD.Core.ReservationService
                     {
                         if (TimeOnly.Parse(createModel.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            isTimeValid = false;
+                            throw new NotImplementedException();
                         }
                         else if (TimeOnly.Parse(createModel.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            isTimeValid = false;
+                            throw new NotImplementedException();
                         }
                     }
                 }
             }
             tempList[tableNumber].Availability.Add(createModel);
             jsonService.SaveListAsJsonFile(tempList);
-
-            return isTimeValid;
         }
 
         // ------------------------------------------------------------------
         // Get All Reservations
         // ------------------------------------------------------------------
-        public List<GetTableDto> GetAll()
+        public List<ReservationDto> GetAll(int tableID)
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            // get TableModel from JSON Table List per index
+            TableModel tableModel = jsonService.LoadListFromJsonFile()[tableID];
 
-            List<GetTableDto> getAllList = new List<GetTableDto>();
+            // Create temp List of reservations from the mapped table
+            TableDto tableDto = Mapper.Map(tableModel);
 
-            for (int i = 0; i < 4; i++)
+            // Fill the tempList with mapped reservationModels
+            foreach (ReservationModel model in tableModel.Availability)
             {
-                GetTableDto getTableDto = new GetTableDto(tempList[i].Kapacity, tempList[i].Name);
-                getAllList.Add(getTableDto);
-
-                foreach (ReservationModel model in tempList[i].Availability)
-                {
-                    GetReservationDto reservationDto = Mapper.Map(model);
-                    getAllList[i].Availability.Add(reservationDto);
-                }
+                ReservationDto reservationDto = Mapper.Map(model);
+                tableDto.Availability.Add(reservationDto);
             }
-            return getAllList;
+
+            return tableDto.Availability;
         }
 
         // ------------------------------------------------------------------
         // Get Single Reservation
         // ------------------------------------------------------------------
-        public GetReservationDto GetById(int tableId, int reservationId)
+        public ReservationDto GetById(int tableId, int reservationId)
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            ReservationModel tableModel = jsonService.LoadListFromJsonFile()[tableId].Availability[reservationId];
+            
+            ReservationDto tableDto = Mapper.Map(tableModel);
 
-            ReservationModel getModel = tempList[tableId].Availability[reservationId];
-
-            GetReservationDto getReservationDto = Mapper.Map(getModel);
-
-            return getReservationDto;
+            return tableDto;
         }
 
         // ------------------------------------------------------------------
@@ -117,10 +109,9 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Update Reservation
         // ------------------------------------------------------------------
-        public bool UpdateById(int tableId, int reservationId, UpdateReservationDto reservation)
+        public void UpdateById(int tableId, int reservationId, UpdateReservationDto reservation)
         {
             ReservationModel updateModel = Mapper.Map(reservation);
-            bool isTimeValid = true;
 
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
@@ -142,18 +133,17 @@ namespace CRUD.Core.ReservationService
                     {
                         if (TimeOnly.Parse(reservation.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            isTimeValid = false;
+                            throw new NotImplementedException();
                         }
                         else if (TimeOnly.Parse(reservation.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            isTimeValid = false;
+                            throw new NotImplementedException();
                         }
                     }
                 }
             }
             tempList[tableNumber].Availability.Add(updateModel);
             jsonService.SaveListAsJsonFile(tempList);
-            return isTimeValid;
         }
 
 

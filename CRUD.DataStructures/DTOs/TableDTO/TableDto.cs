@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CRUD.DataStructures.DTOs.TableDTO
 {
-    public class GetTableDto : IDto
+    public class TableDto : IDto
     {
         private int kapacity;
         public int Kapacity
@@ -20,14 +20,14 @@ namespace CRUD.DataStructures.DTOs.TableDTO
             set { name = value; }
         }
 
-        private List<GetReservationDto> availability = new List<GetReservationDto>();
-        public List<GetReservationDto> Availability
+        private List<ReservationDto> availability = new List<ReservationDto>();
+        public List<ReservationDto> Availability
         {
             get { return availability; }
             set { availability = value; }
         }
 
-        public GetTableDto(int kapacityInput, string nameInput)
+        public TableDto(int kapacityInput, string nameInput)
         {
             Kapacity = kapacityInput;
             Name = nameInput;
