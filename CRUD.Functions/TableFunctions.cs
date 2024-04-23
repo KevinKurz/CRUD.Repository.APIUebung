@@ -16,7 +16,7 @@ namespace CRUD.Functions
     {
         private readonly ITableRepository _tableRepository;
 
-        public TableFunctions(TableRepository tableRepository)
+        public TableFunctions(ITableRepository tableRepository)
         {
             _tableRepository = tableRepository;
         }
@@ -34,11 +34,11 @@ namespace CRUD.Functions
             try
             {
                 List<TableDto> response = _tableRepository.GetAll();
-                return new OkObjectResult(true);
+                return new OkObjectResult(response);
             }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
@@ -61,11 +61,11 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
@@ -83,6 +83,10 @@ namespace CRUD.Functions
             {
                 _tableRepository.DeleteAll();
                 return new OkResult();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
             }
             catch (Exception)
             {
@@ -110,16 +114,16 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
         // ------------------------------------------------------------------
-        // Post Table
+        // Create Table
         // ------------------------------------------------------------------
         [Function("POST_Table")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Table" })]
@@ -139,9 +143,13 @@ namespace CRUD.Functions
 
                 return new StatusCodeResult(StatusCodes.Status201Created);
             }
+            catch (NotImplementedException ex)
+            { 
+                return new BadRequestObjectResult(ex.Message);
+            }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
@@ -169,9 +177,17 @@ namespace CRUD.Functions
 
                 return new OkResult();
             }
+            catch (NotImplementedException ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
             catch (Exception ex)
             {
-                return new BadRequestObjectResult(ex);
+                return new BadRequestObjectResult(ex.Message);
             }
         }
     }

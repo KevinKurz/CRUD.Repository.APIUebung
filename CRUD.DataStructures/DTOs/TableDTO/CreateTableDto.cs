@@ -1,18 +1,23 @@
 ﻿using CRUD.DataStructures.AttributeService;
 using CRUD.DataStructures.DTOs.ReservationDTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace CRUD.DataStructures.DTOs.TableDTO
 {
     public class CreateTableDto : IDto
     {
         private int kapacity;
+        private string name;
+
+        [Required]
+        [Range(2, 10)]
         public int Kapacity
         {
             get { return kapacity; }
             set { kapacity = value; }
         }
 
-        private string name;
+        [Required]
         public string Name
         {
             get { return name; }

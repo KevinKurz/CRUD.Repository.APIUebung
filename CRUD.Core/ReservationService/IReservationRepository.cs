@@ -13,27 +13,4 @@ namespace CRUD.Core.ReservationService
         void DeleteAll();
         void IsRequestQueryValide(int id, int id2);
     }
-
-
-
-
-    public interface IReposity<T>
-    {
-        T GetById(int id);
-        List<T> GetAll();
-    }
-
-
-    public class Reservation2Repository: IReposity<ReservationDto>
-    {
-        public ReservationDto GetById(int z)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ReservationDto> GetAll()
-        {
-            throw new NotImplementedException() { };
-        }
-    }
 }
