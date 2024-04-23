@@ -57,7 +57,7 @@ namespace CRUD.Functions
             {
                 _tableRepository.IsRequestQueryValide(tableId);
                 TableDto response = _tableRepository.GetById(tableId);
-                return new OkObjectResult(true);
+                return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
             {

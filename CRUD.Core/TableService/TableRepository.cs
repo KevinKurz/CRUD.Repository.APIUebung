@@ -20,7 +20,9 @@ namespace CRUD.Core.TableService
             if (maxCapacity <= 50)
             {
                 TableModel model = Mapper.Map(tableDto);
-                jsonService.LoadListFromJsonFile().Add(model);
+                List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+                tempList.Add(model);
+                jsonService.SaveListAsJsonFile(tempList);
             }
             else
             {
@@ -41,7 +43,9 @@ namespace CRUD.Core.TableService
                 if (maxCapacity <= 50)
                 {
                     TableModel model = Mapper.Map(tableDto);
-                    model = jsonService.LoadListFromJsonFile()[tableNumber];
+                    List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+                    model = tempList[tableNumber];
+                    jsonService.SaveListAsJsonFile(tempList);
                 }
                 else
                 {
@@ -58,7 +62,7 @@ namespace CRUD.Core.TableService
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
             //Check that tableNumber is bigger than the basetables
-            if(tableNumber <= tempList.Count && tableNumber > 3 )
+            if(tableNumber <= tempList.Count - 1 && tableNumber > 3 )
             {
                 tempList.RemoveAt(tableNumber);
                 jsonService.SaveListAsJsonFile(tempList);
@@ -75,7 +79,7 @@ namespace CRUD.Core.TableService
             //Do not delete basetables
             if(tempList.Count >= 4 )
             {
-                tempList.RemoveRange(4, tempList.Count);
+                tempList.RemoveRange(4, tempList.Count - 4);
                 jsonService.SaveListAsJsonFile(tempList);
             }
             else
@@ -87,7 +91,7 @@ namespace CRUD.Core.TableService
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
-            if (tableNumber > 0 && tableNumber <= tempList.Count)
+            if (tableNumber > 0 && tableNumber <= tempList.Count - 1)
             {
                 TableModel model = tempList[tableNumber];
                 TableDto dto = Mapper.Map(model);
