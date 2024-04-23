@@ -24,12 +24,12 @@ namespace CRUD.DataStructures.DTOs.TableDTO
             set { name = value; }
         }
 
-        private List<UpdateReservationDto> availability = new List<UpdateReservationDto>();
-        public List<UpdateReservationDto> Availability
-        {
-            get { return availability; }
-            set { availability = value; }
-        }
+        //private List<UpdateReservationDto> availability = new List<UpdateReservationDto>();
+        //public List<UpdateReservationDto> Availability
+        //{
+        //    get { return availability; }
+        //    set { availability = value; }
+        //}
 
         public UpdateTableDto(int kapacityInput, string nameInput)
         {
