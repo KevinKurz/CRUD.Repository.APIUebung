@@ -4,10 +4,10 @@ using CRUD.DataStructures.DTOs.TableDTO;
 
 namespace CRUD.Core.TableService
 {
-    public class TableRepository : ITableRepository
+    public class TableRepository : ITableRepository<ITableDto>
     {
         JsonService jsonService = new JsonService();
-        public void CreateTable(CreateTableDto tableDto)
+        public void Create(ITableDto tableDto)
         {
             int maxCapacity = 0;
             
@@ -19,7 +19,7 @@ namespace CRUD.Core.TableService
 
             if (maxCapacity <= 50)
             {
-                TableModel model = Mapper.Map(tableDto);
+                TableModel model = Mapper.Map((CreateTableDto)tableDto);
                 List<TableModel> tempList = jsonService.LoadListFromJsonFile();
                 tempList.Add(model);
                 jsonService.SaveListAsJsonFile(tempList);
@@ -29,7 +29,7 @@ namespace CRUD.Core.TableService
                 throw new NotImplementedException("You exceeded your maximum capacity limit. Delete or edit some tables.");
             }
         }
-        public void UpdateTable(UpdateTableDto tableDto, int tableNumber)
+        public void UpdateById(ITableDto tableDto, int tableNumber)
         {
             int maxCapacity = 0;
 
@@ -42,7 +42,7 @@ namespace CRUD.Core.TableService
                 }
                 if (maxCapacity <= 50)
                 {
-                    TableModel model = Mapper.Map(tableDto);
+                    TableModel model = Mapper.Map((UpdateTableDto)tableDto);
                     List<TableModel> tempList = jsonService.LoadListFromJsonFile();
                     model = tempList[tableNumber];
                     jsonService.SaveListAsJsonFile(tempList);
@@ -87,7 +87,7 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException("All possible tables are already deletet"); 
             }
         }
-        public TableDto GetById(int tableNumber)
+        public ITableDto GetById(int tableNumber)
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
@@ -102,7 +102,7 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException();
             }
         }
-        public List<TableDto> GetAll()
+        public IEnumerable<ITableDto> GetAll()
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 

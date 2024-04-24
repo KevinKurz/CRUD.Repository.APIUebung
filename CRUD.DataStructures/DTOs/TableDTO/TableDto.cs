@@ -1,10 +1,9 @@
-﻿using CRUD.DataStructures.AttributeService;
-using CRUD.DataStructures.DTOs.ReservationDTO;
+﻿using CRUD.DataStructures.DTOs.ReservationDTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace CRUD.DataStructures.DTOs.TableDTO
 {
-    public class TableDto : IDto
+    public class TableDto : ITableDto
     {
         private int kapacity;
         private string name;

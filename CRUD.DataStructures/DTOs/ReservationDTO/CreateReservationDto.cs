@@ -3,7 +3,7 @@ using CRUD.DataStructures.AttributeService;
 
 namespace CRUD.DataStructures.DTOs.ReservationDTO
 {
-    public class CreateReservationDto : IDto
+    public class CreateReservationDto : IReservationDto
     {
         private int kapacity;
         private string? lastName;

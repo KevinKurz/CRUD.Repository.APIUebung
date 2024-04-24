@@ -9,14 +9,15 @@ using Microsoft.OpenApi.Models;
 using System.Net;
 using Newtonsoft.Json;
 using CRUD.DataStructures.AttributeService;
+using System.Linq;
 
 namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly ITableRepository _tableRepository;
+        private readonly ITableRepository<ITableDto> _tableRepository;
 
-        public TableFunctions(ITableRepository tableRepository)
+        public TableFunctions(ITableRepository<ITableDto> tableRepository)
         {
             _tableRepository = tableRepository;
         }
@@ -33,7 +34,7 @@ namespace CRUD.Functions
         {
             try
             {
-                List<TableDto> response = _tableRepository.GetAll();
+                List<TableDto> response = (List<TableDto>)_tableRepository.GetAll();
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace CRUD.Functions
             try
             {
                 _tableRepository.IsRequestQueryValide(tableId);
-                TableDto response = _tableRepository.GetById(tableId);
+                TableDto response = (TableDto)_tableRepository.GetById(tableId);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -139,7 +140,7 @@ namespace CRUD.Functions
                 CreateTableDto tableDto = JsonConvert.DeserializeObject<CreateTableDto>(requestBody);
 
                 tableDto.IsValid();
-                _tableRepository.CreateTable(tableDto);
+                _tableRepository.Create(tableDto);
 
                 return new StatusCodeResult(StatusCodes.Status201Created);
             }
@@ -173,7 +174,7 @@ namespace CRUD.Functions
                 tableDto.IsValid();
 
                 _tableRepository.IsRequestQueryValide(tableId);
-                _tableRepository.UpdateTable(tableDto, tableId);
+                _tableRepository.UpdateById(tableDto, tableId);
 
                 return new OkResult();
             }

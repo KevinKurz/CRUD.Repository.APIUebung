@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CRUD.DataStructures.DTOs.TableDTO
 {
-    public class UpdateTableDto : IDto
+    public class UpdateTableDto : ITableDto
     {
         private int kapacity;
         private string name;
@@ -23,13 +23,6 @@ namespace CRUD.DataStructures.DTOs.TableDTO
             get { return name; }
             set { name = value; }
         }
-
-        //private List<UpdateReservationDto> availability = new List<UpdateReservationDto>();
-        //public List<UpdateReservationDto> Availability
-        //{
-        //    get { return availability; }
-        //    set { availability = value; }
-        //}
 
         public UpdateTableDto(int kapacityInput, string nameInput)
         {

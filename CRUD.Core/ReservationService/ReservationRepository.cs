@@ -5,16 +5,16 @@ using CRUD.DataStructures.DataModel;
 
 namespace CRUD.Core.ReservationService
 {
-    public class ReservationRepository : IReservationRepository
+    public class ReservationRepository : IReservationRepository<IReservationDto>
     {
         JsonService jsonService = new JsonService();
 
         // ------------------------------------------------------------------
         // Post Reservation
         // ------------------------------------------------------------------
-        public void Create(CreateReservationDto reservation)
+        public void Create(IReservationDto reservation)
         {
-            ReservationModel createModel = Mapper.Map(reservation);
+            ReservationModel createModel = Mapper.Map((CreateReservationDto)reservation);
 
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
@@ -48,7 +48,7 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Get All Reservations
         // ------------------------------------------------------------------
-        public List<ReservationDto> GetAll(int tableID)
+        public IEnumerable<IReservationDto> GetAll(int tableID)
         {
             // get TableModel from JSON Table List per index
             TableModel tableModel = jsonService.LoadListFromJsonFile()[tableID];
@@ -69,7 +69,7 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Get Single Reservation
         // ------------------------------------------------------------------
-        public ReservationDto GetById(int tableId, int reservationId)
+        public IReservationDto GetById(int tableId, int reservationId)
         {
             ReservationModel tableModel = jsonService.LoadListFromJsonFile()[tableId].Availability[reservationId];
             
@@ -109,9 +109,9 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Update Reservation
         // ------------------------------------------------------------------
-        public void UpdateById(int tableId, int reservationId, UpdateReservationDto reservation)
+        public void UpdateById(int tableId, int reservationId, IReservationDto reservation)
         {
-            ReservationModel updateModel = Mapper.Map(reservation);
+            ReservationModel updateModel = Mapper.Map((UpdateReservationDto)reservation);
 
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
 
@@ -120,7 +120,7 @@ namespace CRUD.Core.ReservationService
 
             int tableNumber = 0;
 
-            while (reservation.Kapacity > tempList[tableNumber].Kapacity)
+            while (updateModel.Kapacity > tempList[tableNumber].Kapacity)
             {
                 tableNumber++;
             }
@@ -129,13 +129,13 @@ namespace CRUD.Core.ReservationService
             {
                 foreach (ReservationModel resDto in tempList[tableNumber].Availability)
                 {
-                    if (resDto.Date.Equals(reservation.Date) == true)
+                    if (resDto.Date.Equals(updateModel.Date) == true)
                     {
-                        if (TimeOnly.Parse(reservation.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
+                        if (TimeOnly.Parse(updateModel.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
                             throw new NotImplementedException();
                         }
-                        else if (TimeOnly.Parse(reservation.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
+                        else if (TimeOnly.Parse(updateModel.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
                             throw new NotImplementedException();
                         }

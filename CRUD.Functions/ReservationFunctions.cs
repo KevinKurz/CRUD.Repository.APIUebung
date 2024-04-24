@@ -17,8 +17,8 @@ namespace CRUD.TableFunctions
 {
     public class ReservationFunctions
     {
-        private readonly IReservationRepository _reservationRepository;
-        public ReservationFunctions(IReservationRepository reservationRepository)
+        private readonly IReservationRepository<IReservationDto> _reservationRepository;
+        public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository)
         {
             _reservationRepository = reservationRepository;
         }
@@ -73,7 +73,7 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                List<ReservationDto> response = _reservationRepository.GetAll(tableId);
+                List<ReservationDto> response = (List<ReservationDto>)_reservationRepository.GetAll(tableId);
                 return new OkObjectResult(response);
             }
             catch (Exception)
@@ -97,7 +97,7 @@ namespace CRUD.TableFunctions
             try
             {
                 _reservationRepository.IsRequestQueryValide(tableId, reservationId);
-                ReservationDto response = _reservationRepository.GetById(tableId, reservationId);
+                ReservationDto response = (ReservationDto)_reservationRepository.GetById(tableId, reservationId);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException)

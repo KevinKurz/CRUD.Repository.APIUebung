@@ -1,13 +1,11 @@
-﻿using CRUD.DataStructures.DTOs.TableDTO;
-
-namespace CRUD.Core.TableService
+﻿namespace CRUD.Core.TableService
 {
-    public interface ITableRepository
+    public interface ITableRepository<T>
     {
-        List<TableDto> GetAll();
-        TableDto GetById(int id);
-        void CreateTable(CreateTableDto table);
-        void UpdateTable(UpdateTableDto table, int id);
+        IEnumerable<T> GetAll();
+        T GetById(int id);
+        void Create(T table);
+        void UpdateById(T table, int id);
         void DeleteById(int id);
         void DeleteAll();
         void IsRequestQueryValide(int id);

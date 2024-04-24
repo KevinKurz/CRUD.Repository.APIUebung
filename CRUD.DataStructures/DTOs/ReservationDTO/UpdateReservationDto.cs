@@ -4,7 +4,7 @@ using CRUD.DataStructures.AttributeService;
 
 namespace CRUD.DataStructures.DTOs.ReservationDTO
 {
-    public class UpdateReservationDto : IDto
+    public class UpdateReservationDto : IReservationDto
     {
         private int kapacity;
         private string? lastName;

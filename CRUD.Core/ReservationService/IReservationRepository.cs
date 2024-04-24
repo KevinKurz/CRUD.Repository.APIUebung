@@ -1,14 +1,11 @@
-﻿using CRUD.DataStructures.DTOs.ReservationDTO;
-using CRUD.DataStructures.DTOs.TableDTO;
-
-namespace CRUD.Core.ReservationService
+﻿namespace CRUD.Core.ReservationService
 {
-    public interface IReservationRepository
+    public interface IReservationRepository<T>
     {
-        ReservationDto GetById(int id, int id2);
-        List<ReservationDto> GetAll(int id);
-        void Create(CreateReservationDto reservationDto);
-        void UpdateById(int id1, int id2, UpdateReservationDto reservationDto);
+        IEnumerable<T> GetAll(int id);
+        T GetById(int id, int id2);
+        void Create(T reservationDto);
+        void UpdateById(int id1, int id2, T reservationDto);
         void DeleteById(int id, int id2);
         void DeleteAll();
         void IsRequestQueryValide(int id, int id2);
