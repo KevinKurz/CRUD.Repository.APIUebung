@@ -12,6 +12,11 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Post Reservation
         // ------------------------------------------------------------------
+        /// <summary>
+        /// <paramref name="reservation"/> must be a type of <see cref="CreateReservationDto"/>
+        /// </summary>
+        /// <param name="reservation"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void Create(IReservationDto reservation)
         {
             ReservationModel createModel = Mapper.Map((CreateReservationDto)reservation);
@@ -48,6 +53,11 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Get All Reservations
         // ------------------------------------------------------------------
+        /// <summary>
+        /// Maps a List of objects from <see cref="ReservationModel"/> to a List of <see cref="ReservationDto"/>
+        /// </summary>
+        /// <param name="tableID"></param>
+        /// <returns>List of <see cref="ReservationDto"/></returns>
         public IEnumerable<IReservationDto> GetAll(int tableID)
         {
             // get TableModel from JSON Table List per index
@@ -69,6 +79,12 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Get Single Reservation
         // ------------------------------------------------------------------
+        /// <summary>
+        /// Gets the specific object of <see cref="ReservationDto"/> by the index <paramref name="tableId"/> and <paramref name="reservationId"/>
+        /// </summary>
+        /// <param name="tableId"></param>
+        /// <param name="reservationId"></param>
+        /// <returns><see cref="ReservationDto"/></returns>
         public IReservationDto GetById(int tableId, int reservationId)
         {
             ReservationModel tableModel = jsonService.LoadListFromJsonFile()[tableId].Availability[reservationId];
@@ -81,6 +97,9 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Delete All Reservations
         // ------------------------------------------------------------------
+        /// <summary>
+        /// Delete all Reservations from all tables in the List of <see cref="TableModel"/>
+        /// </summary>
         public void DeleteAll()
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
@@ -98,6 +117,11 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Delete Single Reservation
         // ------------------------------------------------------------------
+        /// <summary>
+        /// Delete a specific <see cref="ReservationModel"/> from a table of the List of <see cref="TableModel"/>
+        /// </summary>
+        /// <param name="tableId"></param>
+        /// <param name="reservationId"></param>
         public void DeleteById(int tableId, int reservationId)
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
@@ -109,6 +133,13 @@ namespace CRUD.Core.ReservationService
         // ------------------------------------------------------------------
         // Update Reservation
         // ------------------------------------------------------------------
+        /// <summary>
+        /// <paramref name="reservation"/> must be a type of <see cref="UpdateReservationDto"/>
+        /// </summary>
+        /// <param name="tableId"></param>
+        /// <param name="reservationId"></param>
+        /// <param name="reservation"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void UpdateById(int tableId, int reservationId, IReservationDto reservation)
         {
             ReservationModel updateModel = Mapper.Map((UpdateReservationDto)reservation);

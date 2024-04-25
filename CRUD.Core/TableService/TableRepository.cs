@@ -7,6 +7,12 @@ namespace CRUD.Core.TableService
     public class TableRepository : ITableRepository<ITableDto>
     {
         JsonService jsonService = new JsonService();
+
+        /// <summary>
+        /// <paramref name="tableDto"/> must be a type of <see cref="CreateTableDto"/>
+        /// </summary>
+        /// <param name="tableDto"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void Create(ITableDto tableDto)
         {
             int maxCapacity = 0;
@@ -29,6 +35,14 @@ namespace CRUD.Core.TableService
                 throw new NotImplementedException("You exceeded your maximum capacity limit. Delete or edit some tables.");
             }
         }
+        /// <summary>
+        /// <paramref name="tableDto"/> must be a type of <see cref="UpdateTableDto"/><br/>
+        /// <paramref name="tableNumber"/> must be grater then 3
+        /// </summary>
+        /// <param name="tableDto"></param>
+        /// <param name="tableNumber"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void UpdateById(ITableDto tableDto, int tableNumber)
         {
             int maxCapacity = 0;
@@ -57,6 +71,11 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException("You can't update the first four base tables");
             }
         }
+        /// <summary>
+        /// Delete one table from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/>
+        /// </summary>
+        /// <param name="tableNumber"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteById(int tableNumber)
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
@@ -72,6 +91,10 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException("You either try to delete one of your base tables or you try to delete out of your range");
             }
         }
+        /// <summary>
+        /// Delete all tables except the four base tables
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteAll()
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
@@ -88,12 +111,10 @@ namespace CRUD.Core.TableService
             }
         }
         /// <summary>
-        /// 
+        /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/>
         /// </summary>
         /// <param name="tableNumber"></param>
-        /// <returns name="TableDto">
-        /// 
-        /// </returns>
+        /// <returns><see cref="TableDto"/></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ITableDto GetById(int tableNumber)
         {
@@ -111,9 +132,9 @@ namespace CRUD.Core.TableService
             }
         }
         /// <summary>
-        /// Transforms model in TableDto
+        /// Transforms a List of <see cref="TableModel"/> to a List of <see cref="TableDto"/>
         /// </summary>
-        /// <returns> <see cref="TableDto"/></returns>
+        /// <returns>List of <see cref="TableDto"/></returns>
         public IEnumerable<ITableDto> GetAll()
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();

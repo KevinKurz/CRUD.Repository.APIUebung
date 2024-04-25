@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CRUD.DataStructures\CRUD.DataStructures.csproj" />
-    <ProjectReference Include="..\CRUD.Repository\CRUD.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,10 +17,10 @@ namespace CRUD.TableFunctions
 {
     public class ReservationFunctions
     {
-        private readonly IReservationRepository<IReservationDto> _reservationRepository;
+        private readonly IReservationRepository<IReservationDto> _reservationInterface;
         public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository)
         {
-            _reservationRepository = reservationRepository;
+            _reservationInterface = reservationRepository;
         }
 
         // ------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace CRUD.TableFunctions
                 CreateReservationDto reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
 
                 reservationDto.IsValid();
-                _reservationRepository.Create(reservationDto);
+                _reservationInterface.Create(reservationDto);
 
                 return new StatusCodeResult(StatusCodes.Status201Created);
 
@@ -73,7 +73,7 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                List<ReservationDto> response = (List<ReservationDto>)_reservationRepository.GetAll(tableId);
+                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(tableId);
                 return new OkObjectResult(response);
             }
             catch (Exception)
@@ -96,8 +96,8 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                _reservationRepository.IsRequestQueryValide(tableId, reservationId);
-                ReservationDto response = (ReservationDto)_reservationRepository.GetById(tableId, reservationId);
+                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException)
@@ -118,7 +118,7 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                _reservationRepository.DeleteAll();
+                _reservationInterface.DeleteAll();
                 return new OkResult();
             }
             catch (Exception)
@@ -141,8 +141,8 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                _reservationRepository.IsRequestQueryValide(tableId, reservationId);
-                _reservationRepository.DeleteById(tableId, reservationId);
+                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                _reservationInterface.DeleteById(tableId, reservationId);
                 return new OkResult();
             }
             catch (ArgumentOutOfRangeException)
@@ -172,8 +172,8 @@ namespace CRUD.TableFunctions
 
                 reservationDto.IsValid();
 
-                _reservationRepository.IsRequestQueryValide(tableId, reservationId);
-                _reservationRepository.UpdateById(tableId, reservationId, reservationDto);
+                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                _reservationInterface.UpdateById(tableId, reservationId, reservationDto);
 
                 return new OkResult();
             }

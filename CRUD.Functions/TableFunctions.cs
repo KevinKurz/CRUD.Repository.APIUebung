@@ -15,11 +15,11 @@ namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly ITableRepository<ITableDto> _tableRepository;
+        private readonly ITableRepository<ITableDto> _tableInterface;
 
         public TableFunctions(ITableRepository<ITableDto> tableRepository)
         {
-            _tableRepository = tableRepository;
+            _tableInterface = tableRepository;
         }
 
         // ------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace CRUD.Functions
         {
             try
             {
-                List<TableDto> response = (List<TableDto>)_tableRepository.GetAll();
+                List<TableDto> response = (List<TableDto>)_tableInterface.GetAll();
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -56,8 +56,8 @@ namespace CRUD.Functions
         {
             try
             {
-                _tableRepository.IsRequestQueryValide(tableId);
-                TableDto response = (TableDto)_tableRepository.GetById(tableId);
+                _tableInterface.IsRequestQueryValide(tableId);
+                TableDto response = (TableDto)_tableInterface.GetById(tableId);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -82,7 +82,7 @@ namespace CRUD.Functions
         {
             try
             {
-                _tableRepository.DeleteAll();
+                _tableInterface.DeleteAll();
                 return new OkResult();
             }
             catch (ArgumentOutOfRangeException ex)
@@ -108,8 +108,8 @@ namespace CRUD.Functions
         {
             try
             {
-                _tableRepository.IsRequestQueryValide(tableId);
-                _tableRepository.DeleteById(tableId);
+                _tableInterface.IsRequestQueryValide(tableId);
+                _tableInterface.DeleteById(tableId);
 
                 return new OkResult();
             }
@@ -140,7 +140,7 @@ namespace CRUD.Functions
                 CreateTableDto tableDto = JsonConvert.DeserializeObject<CreateTableDto>(requestBody);
 
                 tableDto.IsValid();
-                _tableRepository.Create(tableDto);
+                _tableInterface.Create(tableDto);
 
                 return new StatusCodeResult(StatusCodes.Status201Created);
             }
@@ -173,8 +173,8 @@ namespace CRUD.Functions
 
                 tableDto.IsValid();
 
-                _tableRepository.IsRequestQueryValide(tableId);
-                _tableRepository.UpdateById(tableDto, tableId);
+                _tableInterface.IsRequestQueryValide(tableId);
+                _tableInterface.UpdateById(tableDto, tableId);
 
                 return new OkResult();
             }

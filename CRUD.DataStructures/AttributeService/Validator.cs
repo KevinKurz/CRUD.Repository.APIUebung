@@ -4,6 +4,10 @@ namespace CRUD.DataStructures.AttributeService
 {
     public static class ValidationRepository
     {
+        /// <summary>
+        /// <see cref="IDto"/> can be any DtoObject in this Project. 
+        /// </summary>
+        /// <param name="value"></param>
         public static void IsValid(this IDto value)
         {
             ValidationContext validationContext = new ValidationContext(value);
