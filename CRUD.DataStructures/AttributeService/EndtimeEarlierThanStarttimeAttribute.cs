@@ -5,7 +5,7 @@ namespace CRUD.DataStructures.AttributeService
     public class EndtimeEarlierThanStarttimeAttribute : ValidationAttribute
     {
 
-        // Set the name of the property to compare
+        // Set the name of the property to compare with
         private readonly string _comparisonProperty;
         public EndtimeEarlierThanStarttimeAttribute(string comparisonProperty)
         {
