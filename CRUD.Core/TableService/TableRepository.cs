@@ -87,6 +87,14 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException("All possible tables are already deletet"); 
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableNumber"></param>
+        /// <returns name="TableDto">
+        /// 
+        /// </returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ITableDto GetById(int tableNumber)
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
@@ -102,6 +110,10 @@ namespace CRUD.Core.TableService
                 throw new ArgumentOutOfRangeException();
             }
         }
+        /// <summary>
+        /// Transforms model in TableDto
+        /// </summary>
+        /// <returns> <see cref="TableDto"/></returns>
         public IEnumerable<ITableDto> GetAll()
         {
             List<TableModel> tempList = jsonService.LoadListFromJsonFile();
