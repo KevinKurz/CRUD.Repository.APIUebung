@@ -27,8 +27,6 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
         }
 
         [Required]
-        [DataType(DataType.Time)]
-        [TimeValidation()]
         [EndtimeEarlierThanStarttime("EndTime")]
         public string StartTime
         {
@@ -37,8 +35,6 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
         }
 
         [Required]
-        [TimeValidation()]
-        [DataType(DataType.Time)]
         public string EndTime
         {
             get { return endTime; }

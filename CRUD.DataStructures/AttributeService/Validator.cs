@@ -2,7 +2,7 @@
 
 namespace CRUD.DataStructures.AttributeService
 {
-    public static class ValidationRepository
+    public static class Validatior
     {
         /// <summary>
         /// <see cref="IDto"/> can be any DtoObject in this Project. 

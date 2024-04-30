@@ -5,6 +5,8 @@ using CRUD.Core.ReservationService;
 using CRUD.Core.TableService;
 using CRUD.DataStructures.DTOs.TableDTO;
 using CRUD.DataStructures.DTOs.ReservationDTO;
+using CRUD.DataBank;
+using CRUD.Core;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -15,6 +17,8 @@ var host = new HostBuilder()
 
         services.AddSingleton<IReservationRepository<IReservationDto>, ReservationRepository>();
         services.AddSingleton<ITableRepository<ITableDto>, TableRepository>();
+        services.AddSingleton<JsonService>();
+        services.AddSingleton<QueryValidator>();
     })
     .Build();
 

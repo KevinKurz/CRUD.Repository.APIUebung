@@ -6,7 +6,11 @@ namespace CRUD.Core.TableService
 {
     public class TableRepository : ITableRepository<ITableDto>
     {
-        JsonService jsonService = new JsonService();
+        private JsonService _jsonService = new JsonService();
+        public TableRepository(JsonService jsonService)
+        {
+            _jsonService = jsonService;
+        }
 
         /// <summary>
         /// <paramref name="tableDto"/> must be a type of <see cref="CreateTableDto"/>
@@ -16,19 +20,19 @@ namespace CRUD.Core.TableService
         public void Create(ITableDto tableDto)
         {
             int maxCapacity = 0;
-            
+            TableModel model = Mapper.Map((CreateTableDto)tableDto);
+
             //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
-            foreach (TableModel capacityChecker in jsonService.LoadListFromJsonFile())
+            foreach (TableModel capacityChecker in _jsonService.LoadListFromJsonFile())
             {
                 maxCapacity += capacityChecker.Kapacity;
             }
 
             if (maxCapacity <= 50)
             {
-                TableModel model = Mapper.Map((CreateTableDto)tableDto);
-                List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+                List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
                 tempList.Add(model);
-                jsonService.SaveListAsJsonFile(tempList);
+                _jsonService.SaveListAsJsonFile(tempList);
             }
             else
             {
@@ -45,21 +49,24 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void UpdateById(ITableDto tableDto, int tableNumber)
         {
-            int maxCapacity = 0;
+            int currentCapacity = 0;
 
             //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
-            if (tableNumber < 3)
+            if (tableNumber > 3)
             {
-                foreach (TableModel capacityChecker in jsonService.LoadListFromJsonFile())
+                TableModel model = Mapper.Map((UpdateTableDto)tableDto);
+
+                //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
+                foreach (TableModel capacityChecker in _jsonService.LoadListFromJsonFile())
                 {
-                    maxCapacity += capacityChecker.Kapacity;
+                    currentCapacity += capacityChecker.Kapacity;
                 }
-                if (maxCapacity <= 50)
+
+                if (currentCapacity + model.Kapacity <= 50)
                 {
-                    TableModel model = Mapper.Map((UpdateTableDto)tableDto);
-                    List<TableModel> tempList = jsonService.LoadListFromJsonFile();
-                    model = tempList[tableNumber];
-                    jsonService.SaveListAsJsonFile(tempList);
+                    List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+                    tempList[tableNumber] = model; 
+                    _jsonService.SaveListAsJsonFile(tempList);
                 }
                 else
                 {
@@ -78,13 +85,13 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteById(int tableNumber)
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             //Check that tableNumber is bigger than the basetables
-            if(tableNumber <= tempList.Count - 1 && tableNumber > 3 )
+            if (tableNumber <= tempList.Count - 1 && tableNumber > 3)
             {
                 tempList.RemoveAt(tableNumber);
-                jsonService.SaveListAsJsonFile(tempList);
+                _jsonService.SaveListAsJsonFile(tempList);
             }
             else
             {
@@ -97,18 +104,12 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteAll()
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             //Do not delete basetables
-            if(tempList.Count >= 4 )
-            {
-                tempList.RemoveRange(4, tempList.Count - 4);
-                jsonService.SaveListAsJsonFile(tempList);
-            }
-            else
-            { 
-                throw new ArgumentOutOfRangeException("All possible tables are already deletet"); 
-            }
+            tempList.RemoveRange(4, tempList.Count - 4);
+            _jsonService.SaveListAsJsonFile(tempList);
+
         }
         /// <summary>
         /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/>
@@ -118,9 +119,9 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ITableDto GetById(int tableNumber)
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
-            if (tableNumber > 0 && tableNumber <= tempList.Count - 1)
+            if (tableNumber >= 0 && tableNumber <= tempList.Count - 1)
             {
                 TableModel model = tempList[tableNumber];
                 TableDto dto = Mapper.Map(model);
@@ -128,7 +129,7 @@ namespace CRUD.Core.TableService
             }
             else
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("You try to get a table which is not existing");
             }
         }
         /// <summary>
@@ -137,26 +138,16 @@ namespace CRUD.Core.TableService
         /// <returns>List of <see cref="TableDto"/></returns>
         public IEnumerable<ITableDto> GetAll()
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             List<TableDto> dtoList = new List<TableDto>();
 
-            foreach ( TableModel model in tempList )
+            foreach (TableModel model in tempList)
             {
                 TableDto dto = Mapper.Map(model);
                 dtoList.Add(dto);
             }
-
             return dtoList;
-        }
-        public void IsRequestQueryValide(int tableId)
-        {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
-
-            if (tableId < 0 || tableId > tempList.Count - 1)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }

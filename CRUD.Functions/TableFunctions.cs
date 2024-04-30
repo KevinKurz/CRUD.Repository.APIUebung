@@ -9,17 +9,19 @@ using Microsoft.OpenApi.Models;
 using System.Net;
 using Newtonsoft.Json;
 using CRUD.DataStructures.AttributeService;
-using System.Linq;
+using CRUD.Core;
 
 namespace CRUD.Functions
 {
     public class TableFunctions
     {
         private readonly ITableRepository<ITableDto> _tableInterface;
+        private readonly QueryValidator _queryValidator;
 
-        public TableFunctions(ITableRepository<ITableDto> tableRepository)
+        public TableFunctions(ITableRepository<ITableDto> tableRepository, QueryValidator queryValidator)
         {
             _tableInterface = tableRepository;
+            _queryValidator = queryValidator;
         }
 
         // ------------------------------------------------------------------
@@ -56,7 +58,7 @@ namespace CRUD.Functions
         {
             try
             {
-                _tableInterface.IsRequestQueryValide(tableId);
+                _queryValidator.IsTableRequestQueryValide(tableId);
                 TableDto response = (TableDto)_tableInterface.GetById(tableId);
                 return new OkObjectResult(response);
             }
@@ -85,10 +87,6 @@ namespace CRUD.Functions
                 _tableInterface.DeleteAll();
                 return new OkResult();
             }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return new BadRequestObjectResult(ex.Message);
-            }
             catch (Exception)
             {
                 return new BadRequestObjectResult("Something unexpected happend");
@@ -108,7 +106,7 @@ namespace CRUD.Functions
         {
             try
             {
-                _tableInterface.IsRequestQueryValide(tableId);
+                _queryValidator.IsTableRequestQueryValide(tableId);
                 _tableInterface.DeleteById(tableId);
 
                 return new OkResult();
@@ -173,7 +171,7 @@ namespace CRUD.Functions
 
                 tableDto.IsValid();
 
-                _tableInterface.IsRequestQueryValide(tableId);
+                _queryValidator.IsTableRequestQueryValide(tableId);
                 _tableInterface.UpdateById(tableDto, tableId);
 
                 return new OkResult();

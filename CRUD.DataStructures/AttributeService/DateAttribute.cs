@@ -4,17 +4,15 @@ namespace CRUD.DataStructures.AttributeService
 {
     public class DateValidationAttribute : ValidationAttribute
     {
-        public string GetErrorMessage() => "Your Date is not in the right format";
-
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (DateOnly.TryParse((string)value, out DateOnly parsedDate) == true)
+            if (DateOnly.TryParse((string)value, out DateOnly parsedDate))
             {
                 return ValidationResult.Success;
             }
             else
             {
-                return new ValidationResult(GetErrorMessage());
+                return new ValidationResult("Your input is not DateOnly convertable");
             }
         }
     }
