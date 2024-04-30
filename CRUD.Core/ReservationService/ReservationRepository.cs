@@ -7,7 +7,11 @@ namespace CRUD.Core.ReservationService
 {
     public class ReservationRepository : IReservationRepository<IReservationDto>
     {
-        JsonService jsonService = new JsonService();
+        private JsonService _jsonService = new JsonService();
+        public ReservationRepository(JsonService jsonService) // Create a constructor, in which you define which JsonService you want to include
+        {
+            _jsonService = jsonService;
+        }
 
         // ------------------------------------------------------------------
         // Post Reservation
@@ -21,7 +25,7 @@ namespace CRUD.Core.ReservationService
         {
             ReservationModel createModel = Mapper.Map((CreateReservationDto)reservation);
 
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             int tableNumber = 0;
 
@@ -35,19 +39,23 @@ namespace CRUD.Core.ReservationService
                 {
                     if (resDto.Date.Equals(createModel.Date) == true)
                     {
-                        if (TimeOnly.Parse(createModel.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
+                        if (TimeOnly.Parse(createModel.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)))
                         {
-                            throw new NotImplementedException();
+                            throw new NotImplementedException("Your starttime is in range with an already existing reservation");
                         }
-                        else if (TimeOnly.Parse(createModel.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
+                        else if (TimeOnly.Parse(createModel.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)))
                         {
-                            throw new NotImplementedException();
+                            throw new NotImplementedException("Your endtime is in range with an already existing reservation");
+                        }
+                        else if(TimeOnly.Parse(resDto.StartTime).IsBetween(TimeOnly.Parse(createModel.StartTime), TimeOnly.Parse(createModel.EndTime)) && TimeOnly.Parse(resDto.EndTime).IsBetween(TimeOnly.Parse(createModel.StartTime), TimeOnly.Parse(createModel.EndTime)))
+                        {
+                            throw new NotImplementedException("Your reservation surrounds an already existing reservation");
                         }
                     }
                 }
             }
             tempList[tableNumber].Availability.Add(createModel);
-            jsonService.SaveListAsJsonFile(tempList);
+            _jsonService.SaveListAsJsonFile(tempList);
         }
 
         // ------------------------------------------------------------------
@@ -61,7 +69,7 @@ namespace CRUD.Core.ReservationService
         public IEnumerable<IReservationDto> GetAll(int tableID)
         {
             // get TableModel from JSON Table List per index
-            TableModel tableModel = jsonService.LoadListFromJsonFile()[tableID];
+            TableModel tableModel = _jsonService.LoadListFromJsonFile()[tableID];
 
             // Create temp List of reservations from the mapped table
             TableDto tableDto = Mapper.Map(tableModel);
@@ -87,7 +95,7 @@ namespace CRUD.Core.ReservationService
         /// <returns><see cref="ReservationDto"/></returns>
         public IReservationDto GetById(int tableId, int reservationId)
         {
-            ReservationModel tableModel = jsonService.LoadListFromJsonFile()[tableId].Availability[reservationId];
+            ReservationModel tableModel = _jsonService.LoadListFromJsonFile()[tableId].Availability[reservationId];
             
             ReservationDto tableDto = Mapper.Map(tableModel);
 
@@ -102,14 +110,14 @@ namespace CRUD.Core.ReservationService
         /// </summary>
         public void DeleteAll()
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             foreach (TableModel tableDto in tempList)
             {
                 if (tableDto.Availability!.Count != 0 && tableDto.Availability != null)
                 {
                     tableDto.Availability.Clear();
-                    jsonService.SaveListAsJsonFile(tempList);
+                    _jsonService.SaveListAsJsonFile(tempList);
                 }
             }
         }
@@ -124,10 +132,10 @@ namespace CRUD.Core.ReservationService
         /// <param name="reservationId"></param>
         public void DeleteById(int tableId, int reservationId)
         {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             tempList[tableId].Availability.RemoveAt(reservationId);
-            jsonService.SaveListAsJsonFile(tempList);
+            _jsonService.SaveListAsJsonFile(tempList);
         }
 
         // ------------------------------------------------------------------
@@ -144,7 +152,7 @@ namespace CRUD.Core.ReservationService
         {
             ReservationModel updateModel = Mapper.Map((UpdateReservationDto)reservation);
 
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
             //Delete Reservation through given IDs
             tempList[tableId].Availability.RemoveAt(reservationId);
@@ -164,31 +172,21 @@ namespace CRUD.Core.ReservationService
                     {
                         if (TimeOnly.Parse(updateModel.StartTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            throw new NotImplementedException();
+                            throw new NotImplementedException("Your starttime collides with already existing reservationtimes");
                         }
                         else if (TimeOnly.Parse(updateModel.EndTime).IsBetween(TimeOnly.Parse(resDto.StartTime), TimeOnly.Parse(resDto.EndTime)) == true)
                         {
-                            throw new NotImplementedException();
+                            throw new NotImplementedException("Your endtime collides with already existing reservationtimes");
+                        }
+                        else if (TimeOnly.Parse(resDto.StartTime).IsBetween(TimeOnly.Parse(updateModel.StartTime), TimeOnly.Parse(updateModel.EndTime)) && TimeOnly.Parse(resDto.EndTime).IsBetween(TimeOnly.Parse(updateModel.StartTime), TimeOnly.Parse(updateModel.EndTime)))
+                        {
+                            throw new NotImplementedException("Your reservation surrounds an already existing reservation");
                         }
                     }
                 }
             }
             tempList[tableNumber].Availability.Add(updateModel);
-            jsonService.SaveListAsJsonFile(tempList);
-        }
-
-
-        // ------------------------------------------------------------------
-        // Check, if query parametrs were given correctly
-        // ------------------------------------------------------------------
-        public void IsRequestQueryValide(int tableId, int reservationId)
-        {
-            List<TableModel> tempList = jsonService.LoadListFromJsonFile();
-
-            if (tableId < 0 || reservationId < 0 || tableId > tempList.Count - 1 || reservationId > tempList[tableId].Availability.Count - 1)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            _jsonService.SaveListAsJsonFile(tempList);
         }
     }
 }

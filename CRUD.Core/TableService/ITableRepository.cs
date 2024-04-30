@@ -19,7 +19,5 @@ namespace CRUD.Core.TableService
         void UpdateById(T tableDto, int tableId);
         void DeleteById(int tableId);
         void DeleteAll();
-        void IsRequestQueryValide(int tableId);
-
     }
 }

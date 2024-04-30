@@ -12,15 +12,18 @@ using System.ComponentModel.DataAnnotations;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.AttributeService;
 using CRUD.Core.ReservationService;
+using CRUD.Core;
 
 namespace CRUD.TableFunctions
 {
     public class ReservationFunctions
     {
         private readonly IReservationRepository<IReservationDto> _reservationInterface;
-        public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository)
+        private readonly QueryValidator _queryValidator;
+        public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository, QueryValidator queryValidator)
         {
             _reservationInterface = reservationRepository;
+            _queryValidator = queryValidator;
         }
 
         // ------------------------------------------------------------------
@@ -44,11 +47,10 @@ namespace CRUD.TableFunctions
                 _reservationInterface.Create(reservationDto);
 
                 return new StatusCodeResult(StatusCodes.Status201Created);
-
             }
-            catch (NotImplementedException)
+            catch (NotImplementedException ex)
             {
-                return new BadRequestObjectResult("Invalid Parameter. Your times collides with already existing times.");
+                return new BadRequestObjectResult(ex.Message);
             }
             catch (ValidationException ex)
             {
@@ -96,13 +98,13 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
                 ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId);
                 return new OkObjectResult(response);
             }
-            catch (ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult("Invalid Parameter. Your IDs are out of range or smaller than 0.");
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
@@ -141,13 +143,13 @@ namespace CRUD.TableFunctions
         {
             try
             {
-                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
                 _reservationInterface.DeleteById(tableId, reservationId);
                 return new OkResult();
             }
-            catch (ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult("Invalid Parameter. Your IDs are out of range or smaller than 0.");
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
@@ -172,14 +174,14 @@ namespace CRUD.TableFunctions
 
                 reservationDto.IsValid();
 
-                _reservationInterface.IsRequestQueryValide(tableId, reservationId);
+                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
                 _reservationInterface.UpdateById(tableId, reservationId, reservationDto);
 
                 return new OkResult();
             }
-            catch (NotImplementedException)
+            catch (NotImplementedException ex)
             {
-                return new BadRequestObjectResult("Invalid Parameter. Your times collides with already existing times.");
+                return new BadRequestObjectResult(ex.Message);
             }
             catch (ValidationException ex)
             {

@@ -10,18 +10,18 @@ namespace CRUD.DataBank
             new TableModel(2, "Narrentisch"),
             new TableModel(5, "Prinzentisch"),
             new TableModel(8, "Königstisch"),
-            new TableModel(10, "Göttertisch"),
+            new TableModel(10, "Göttertisch")
         };
 
         const string filepath = @"C:\Users\Kevin.Kurz\OneDrive - PlanB. GmbH\Desktop\TableList.json";
 
-        public void SaveListAsJsonFile(List<TableModel> availableTables)
+        public virtual void SaveListAsJsonFile(List<TableModel> availableTables)
         {
             string jsonData = JsonConvert.SerializeObject(availableTables, Formatting.Indented);
             File.WriteAllText(filepath, jsonData);
         }
 
-        public List<TableModel> LoadListFromJsonFile()
+        public virtual List<TableModel> LoadListFromJsonFile()
         {
             if (File.Exists(filepath) == false || string.IsNullOrEmpty(File.ReadAllText(filepath)) == true)
             {

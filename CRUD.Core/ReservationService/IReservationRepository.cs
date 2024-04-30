@@ -22,6 +22,5 @@ namespace CRUD.Core.ReservationService
         void UpdateById(int tableId, int reservationId, T reservationDto);
         void DeleteById(int tableId, int reservationId);
         void DeleteAll();
-        void IsRequestQueryValide(int tableId, int reservationId);
     }
 }

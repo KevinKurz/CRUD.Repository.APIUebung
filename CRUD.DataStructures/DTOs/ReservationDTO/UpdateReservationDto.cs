@@ -29,7 +29,6 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
 
         [Required]
         [DataType(DataType.Time)]
-        [TimeValidation()]
         [EndtimeEarlierThanStarttime("EndTime")]
         public string StartTime
         {
@@ -38,7 +37,6 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
         }
 
         [Required]
-        [TimeValidation()]
         [DataType(DataType.Time)]
         public string EndTime
         {
@@ -53,6 +51,15 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
         {
             get { return date; }
             set { date = value; }
+        }
+
+        public UpdateReservationDto(int kapacityInput, string lastnameInput, string startTimeInput, string endTimeinput, string dateInput)
+        {
+            kapacity = kapacityInput;
+            lastName = lastnameInput;
+            startTime = startTimeInput;
+            endTime = endTimeinput;
+            date = dateInput;
         }
     }
 }
