@@ -14,15 +14,15 @@ using CRUD.DataStructures.AttributeService;
 using CRUD.Core.ReservationService;
 using CRUD.Core;
 
-namespace CRUD.TableFunctions
+namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
         private readonly IReservationRepository<IReservationDto> _reservationInterface;
         private readonly QueryValidator _queryValidator;
-        public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository, QueryValidator queryValidator)
+        public ReservationFunctions(IReservationRepository<IReservationDto> reservationInterface, QueryValidator queryValidator)
         {
-            _reservationInterface = reservationRepository;
+            _reservationInterface = reservationInterface;
             _queryValidator = queryValidator;
         }
 

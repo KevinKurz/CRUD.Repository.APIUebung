@@ -33,7 +33,7 @@ namespace CRUD.xUnitTests.Core_TableService
             //Arrange
             CreateTableDto testDto = new CreateTableDto(99, "Errortable");
             //Act
-            _fakeRepo.Create(testDto);
+
             //Assert
             NotImplementedException ex = Assert.Throws<NotImplementedException>(() => _fakeRepo.Create(testDto));
             Assert.Contains("You exceeded your maximum capacity limit. Delete or edit some tables.", ex.Message);

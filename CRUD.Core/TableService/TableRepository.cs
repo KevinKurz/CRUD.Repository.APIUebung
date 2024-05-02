@@ -19,16 +19,16 @@ namespace CRUD.Core.TableService
         /// <exception cref="NotImplementedException"></exception>
         public void Create(ITableDto tableDto)
         {
-            int maxCapacity = 0;
+            int currentCapacity = 0;
             TableModel model = Mapper.Map((CreateTableDto)tableDto);
 
             //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
             foreach (TableModel capacityChecker in _jsonService.LoadListFromJsonFile())
             {
-                maxCapacity += capacityChecker.Kapacity;
+                currentCapacity += capacityChecker.Kapacity;
             }
 
-            if (maxCapacity <= 50)
+            if (currentCapacity + model.Kapacity <= 50)
             {
                 List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
                 tempList.Add(model);
@@ -55,16 +55,17 @@ namespace CRUD.Core.TableService
             if (tableNumber > 3)
             {
                 TableModel model = Mapper.Map((UpdateTableDto)tableDto);
+                List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
 
                 //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
-                foreach (TableModel capacityChecker in _jsonService.LoadListFromJsonFile())
+                foreach (TableModel capacityChecker in tempList)
                 {
                     currentCapacity += capacityChecker.Kapacity;
                 }
 
-                if (currentCapacity + model.Kapacity <= 50)
+                //Model to be updated is considered in the summary of the whole capacity
+                if (currentCapacity + model.Kapacity - tempList[tableNumber].Kapacity <= 50)
                 {
-                    List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
                     tempList[tableNumber] = model; 
                     _jsonService.SaveListAsJsonFile(tempList);
                 }
