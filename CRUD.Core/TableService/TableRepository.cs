@@ -6,7 +6,7 @@ namespace CRUD.Core.TableService
 {
     public class TableRepository : ITableRepository<ITableDto>
     {
-        private JsonService _jsonService = new JsonService();
+        private JsonService _jsonService;
         public TableRepository(JsonService jsonService)
         {
             _jsonService = jsonService;

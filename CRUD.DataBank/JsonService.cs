@@ -5,29 +5,25 @@ namespace CRUD.DataBank
 {
     public class JsonService
     {
-        private static List<TableModel> AvailableTables = new List<TableModel>()
+        private JsonBank _jsonBank;
+        public JsonService(JsonBank jsonBank) 
         {
-            new TableModel(2, "Narrentisch"),
-            new TableModel(5, "Prinzentisch"),
-            new TableModel(8, "Königstisch"),
-            new TableModel(10, "Göttertisch")
-        };
-
-        const string filepath = @"C:\Users\Kevin.Kurz\OneDrive - PlanB. GmbH\Desktop\TableList.json";
+            _jsonBank = jsonBank;
+        }
 
         public virtual void SaveListAsJsonFile(List<TableModel> availableTables)
         {
             string jsonData = JsonConvert.SerializeObject(availableTables, Formatting.Indented);
-            File.WriteAllText(filepath, jsonData);
+            File.WriteAllText(_jsonBank._filepath, jsonData);
         }
 
         public virtual List<TableModel> LoadListFromJsonFile()
         {
-            if (File.Exists(filepath) == false || string.IsNullOrEmpty(File.ReadAllText(filepath)) == true)
+            if (File.Exists(_jsonBank._filepath) == false || string.IsNullOrEmpty(File.ReadAllText(_jsonBank._filepath)) == true)
             {
-                SaveListAsJsonFile(AvailableTables);
+                SaveListAsJsonFile(_jsonBank.AvailableTables);
             }
-            using (StreamReader reader = new StreamReader(filepath))
+            using (StreamReader reader = new StreamReader(_jsonBank._filepath))
             {
                 string jsonData = reader.ReadToEnd();
                 List<TableModel> tables = JsonConvert.DeserializeObject<List<TableModel>>(jsonData)!;

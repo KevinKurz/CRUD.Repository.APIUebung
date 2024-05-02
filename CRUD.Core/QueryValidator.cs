@@ -5,7 +5,7 @@ namespace CRUD.Core
 {
     public class QueryValidator
     {
-        private JsonService _jsonService = new JsonService();
+        private JsonService _jsonService;
         public QueryValidator(JsonService jsonService) // Create a constructor, in which you define which JsonService you want to include
         {
             _jsonService = jsonService;

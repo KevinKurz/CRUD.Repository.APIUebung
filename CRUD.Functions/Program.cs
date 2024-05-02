@@ -19,6 +19,7 @@ var host = new HostBuilder()
         services.AddSingleton<ITableRepository<ITableDto>, TableRepository>();
         services.AddSingleton<JsonService>();
         services.AddSingleton<QueryValidator>();
+        services.AddSingleton<JsonBank>();
     })
     .Build();
 

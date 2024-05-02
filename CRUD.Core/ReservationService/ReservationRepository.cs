@@ -7,7 +7,7 @@ namespace CRUD.Core.ReservationService
 {
     public class ReservationRepository : IReservationRepository<IReservationDto>
     {
-        private JsonService _jsonService = new JsonService();
+        private JsonService _jsonService;
         public ReservationRepository(JsonService jsonService) // Create a constructor, in which you define which JsonService you want to include
         {
             _jsonService = jsonService;
