@@ -2,7 +2,7 @@
 
 namespace CRUD.DataBank
 {
-    public class JsonBank
+    public class JsonDataBank
     {
         public List<TableModel> AvailableTables = new List<TableModel>()
         {
@@ -12,6 +12,6 @@ namespace CRUD.DataBank
             new TableModel(10, "Göttertisch")
         };
 
-        public readonly string _filepath = @"C:\Users\Kevin.Kurz\OneDrive - PlanB. GmbH\Desktop\TableList.json";
+        public readonly string filepath = Environment.GetEnvironmentVariable("FilePathForJsonFile")!;
     }
 }

@@ -20,9 +20,9 @@ namespace CRUD.xUnitTests.Core_TableService
         public TableServiceExpectedErrors()
         {
             // Mock of JsonService
-            Mock<JsonService> mockService = new Mock<JsonService>(); // You need to mock the Class, which you do not want to be accessed by the test
-            mockService.Setup(m => m.SaveListAsJsonFile(mockList)); // Create a fakeMethod of SaveList
-            mockService.Setup(m => m.LoadListFromJsonFile()).Returns(mockList); // Create a fakeMethod of LoadList
+            Mock<DataService> mockService = new Mock<DataService>(); // You need to mock the Class, which you do not want to be accessed by the test
+            mockService.Setup(m => m.SafeList(mockList)); // Create a fakeMethod of SaveList
+            mockService.Setup(m => m.LoadList()).Returns(mockList); // Create a fakeMethod of LoadList
 
             _fakeRepo = new TableRepository(mockService.Object);
         }

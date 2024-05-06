@@ -15,11 +15,11 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddSingleton<IReservationRepository<IReservationDto>, ReservationRepository>();
-        services.AddSingleton<ITableRepository<ITableDto>, TableRepository>();
-        services.AddSingleton<JsonService>();
-        services.AddSingleton<QueryValidator>();
-        services.AddSingleton<JsonBank>();
+        services.AddSingleton<IReservationRepository<IReservationDto>, ReservationRepository>(); //Included in Reservationfunctions
+        services.AddSingleton<ITableRepository<ITableDto>, TableRepository>(); //Included in TableFunctions
+        services.AddSingleton<IDataService<DataService>>(); //Included in CORE Project
+        services.AddSingleton<QueryValidator>(); //Included in Table and Reservationsfunctions
+        services.AddSingleton<JsonDataBank>(); //Included in JsonService
     })
     .Build();
 

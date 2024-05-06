@@ -7,8 +7,9 @@ namespace CRUD.xUnitTests.Core_QueryValidator
 {
     public class QueryValidatorExpectedErrors
     {
+        // Möglichkeit eine globale Mockklasse zu erstellen?
         // Mocklist
-        private List<TableModel> mockList = new List<TableModel>()
+        private List<TableModel> _mockList = new List<TableModel>()
         {
             new TableModel(2, "Narrentisch"),
             new TableModel(5, "Prinzentisch"),
@@ -19,9 +20,9 @@ namespace CRUD.xUnitTests.Core_QueryValidator
         public QueryValidatorExpectedErrors()
         {
             // Mock of JsonService
-            Mock<JsonService> mockService = new Mock<JsonService>(); // You need to mock the Class, which you do not want to be accessed by the test
-            mockService.Setup(m => m.SaveListAsJsonFile(mockList)); // Create a fakeMethod of SaveList
-            mockService.Setup(m => m.LoadListFromJsonFile()).Returns(mockList); // Create a fakeMethod of LoadList
+            Mock<DataService> mockService = new Mock<DataService>(); // You need to mock the Class, which you do not want to be accessed by the test
+            mockService.Setup(m => m.SafeList(_mockList)); // Create a fakeMethod of SaveList
+            mockService.Setup(m => m.LoadList()).Returns(_mockList); // Create a fakeMethod of LoadList
 
             _fakeValidator = new QueryValidator(mockService.Object);
         }
@@ -36,7 +37,7 @@ namespace CRUD.xUnitTests.Core_QueryValidator
             //Arrange
             ReservationModel listFiller = new ReservationModel(1, "test", "2:00", "4:00", "1.1.1001");
             //Act
-            mockList[0].Availability.Add(listFiller);
+            _mockList[0].Availability.Add(listFiller);
             //Assert
             ArgumentOutOfRangeException ex;
             ex = Assert.Throws<ArgumentOutOfRangeException>(() => _fakeValidator.IsReservationRequestQueryValide(tableId, rerservationId));
@@ -51,7 +52,7 @@ namespace CRUD.xUnitTests.Core_QueryValidator
             //Arrange
             ReservationModel listFiller = new ReservationModel(1, "test", "2:00", "4:00", "1.1.1001");
             //Act
-            mockList[0].Availability.Add(listFiller);
+            _mockList[0].Availability.Add(listFiller);
             //Assert
             ArgumentOutOfRangeException ex;
             ex = Assert.Throws<ArgumentOutOfRangeException>(() => _fakeValidator.IsTableRequestQueryValide(tableId));

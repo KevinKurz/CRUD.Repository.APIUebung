@@ -6,8 +6,8 @@ namespace CRUD.Core.TableService
 {
     public class TableRepository : ITableRepository<ITableDto>
     {
-        private JsonService _jsonService;
-        public TableRepository(JsonService jsonService)
+        private IDataService<IModel> _jsonService;
+        public TableRepository(IDataService<IModel> jsonService)
         {
             _jsonService = jsonService;
         }
@@ -23,16 +23,16 @@ namespace CRUD.Core.TableService
             TableModel model = Mapper.Map((CreateTableDto)tableDto);
 
             //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
-            foreach (TableModel capacityChecker in _jsonService.LoadListFromJsonFile())
+            foreach (TableModel capacityChecker in _jsonService.LoadList())
             {
                 currentCapacity += capacityChecker.Kapacity;
             }
 
             if (currentCapacity + model.Kapacity <= 50)
             {
-                List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+                List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
                 tempList.Add(model);
-                _jsonService.SaveListAsJsonFile(tempList);
+                _jsonService.SafeList(tempList);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace CRUD.Core.TableService
             if (tableNumber > 3)
             {
                 TableModel model = Mapper.Map((UpdateTableDto)tableDto);
-                List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+                List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
                 //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
                 foreach (TableModel capacityChecker in tempList)
@@ -67,7 +67,7 @@ namespace CRUD.Core.TableService
                 if (currentCapacity + model.Kapacity - tempList[tableNumber].Kapacity <= 50)
                 {
                     tempList[tableNumber] = model; 
-                    _jsonService.SaveListAsJsonFile(tempList);
+                    _jsonService.SafeList(tempList);
                 }
                 else
                 {
@@ -86,13 +86,13 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteById(int tableNumber)
         {
-            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             //Check that tableNumber is bigger than the basetables
             if (tableNumber <= tempList.Count - 1 && tableNumber > 3)
             {
                 tempList.RemoveAt(tableNumber);
-                _jsonService.SaveListAsJsonFile(tempList);
+                _jsonService.SafeList(tempList);
             }
             else
             {
@@ -105,11 +105,11 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void DeleteAll()
         {
-            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             //Do not delete basetables
             tempList.RemoveRange(4, tempList.Count - 4);
-            _jsonService.SaveListAsJsonFile(tempList);
+            _jsonService.SafeList(tempList);
 
         }
         /// <summary>
@@ -120,7 +120,7 @@ namespace CRUD.Core.TableService
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public ITableDto GetById(int tableNumber)
         {
-            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             if (tableNumber >= 0 && tableNumber <= tempList.Count - 1)
             {
@@ -139,7 +139,7 @@ namespace CRUD.Core.TableService
         /// <returns>List of <see cref="TableDto"/></returns>
         public IEnumerable<ITableDto> GetAll()
         {
-            List<TableModel> tempList = _jsonService.LoadListFromJsonFile();
+            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             List<TableDto> dtoList = new List<TableDto>();
 
