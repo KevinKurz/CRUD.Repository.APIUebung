@@ -1,30 +1,17 @@
-﻿using CRUD.Core.TableService;
-using CRUD.DataBank;
-using CRUD.DataStructures.DataModel;
+﻿using CRUD.Core.Repositories;
 using CRUD.DataStructures.DTOs.TableDTO;
-using Moq;
 
 namespace CRUD.xUnitTests.Core_TableService
 {
     public class TableServiceExpectedErrors
     {
-        // Mocklist
-        private List<TableModel> mockList = new List<TableModel>()
-        {
-            new TableModel(2, "Narrentisch"),
-            new TableModel(5, "Prinzentisch"),
-            new TableModel(8, "Königstisch"),
-            new TableModel(10, "Göttertisch")
-        };
-        private TableRepository _fakeRepo;
+        private readonly TableRepository _fakeRepo;
+        private readonly MockConfigurator _helperClass;
+
         public TableServiceExpectedErrors()
         {
-            // Mock of JsonService
-            Mock<DataService> mockService = new Mock<DataService>(); // You need to mock the Class, which you do not want to be accessed by the test
-            mockService.Setup(m => m.SafeList(mockList)); // Create a fakeMethod of SaveList
-            mockService.Setup(m => m.LoadList()).Returns(mockList); // Create a fakeMethod of LoadList
-
-            _fakeRepo = new TableRepository(mockService.Object);
+            _helperClass = new MockConfigurator();
+            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object);
         }
 
         [Fact]

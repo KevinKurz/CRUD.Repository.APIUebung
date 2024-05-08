@@ -1,5 +1,4 @@
 using CRUD.DataStructures.DTOs.TableDTO;
-using CRUD.Core.TableService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -10,18 +9,22 @@ using System.Net;
 using Newtonsoft.Json;
 using CRUD.DataStructures.AttributeService;
 using CRUD.Core;
+using Microsoft.Extensions.Logging;
+using CRUD.Core.QueryParams;
+using AuthorizationLevel = Microsoft.Azure.Functions.Worker.AuthorizationLevel;
+using CRUD.Core.Interfaces;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly ITableRepository<ITableDto> _tableInterface;
-        private readonly QueryValidator _queryValidator;
-
-        public TableFunctions(ITableRepository<ITableDto> tableRepository, QueryValidator queryValidator)
+        private readonly IRepository<ITableDto, TableQueryParams> _tableInterface;
+        private readonly PathValidator _pathValidator;
+        public TableFunctions(IRepository<ITableDto, TableQueryParams> tableRepository, PathValidator queryValidator)
         {
             _tableInterface = tableRepository;
-            _queryValidator = queryValidator;
+            _pathValidator = queryValidator;
         }
 
         /// <summary>
@@ -40,7 +43,10 @@ namespace CRUD.Functions
         {
             try
             {
-                List<TableDto> response = (List<TableDto>)_tableInterface.GetAll();
+                int uselessId = 0;
+                TableQueryParams queryParams = new TableQueryParams(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+
+                List<TableDto> response = (List<TableDto>)_tableInterface.GetAll(uselessId, queryParams);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -62,12 +68,16 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(TableDto), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult GetSingleTable([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables/{tableId}")] int tableId)
+        public IActionResult GetSingleTable([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables/{tableId}")] int tableId, HttpRequest req)
         {
             try
             {
-                _queryValidator.IsTableRequestQueryValide(tableId);
-                TableDto response = (TableDto)_tableInterface.GetById(tableId);
+                int uselessId = 0;
+                _pathValidator.IsTableRequestQueryValide(tableId);
+
+                TableQueryParams queryParams = new TableQueryParams(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+
+                TableDto response = (TableDto)_tableInterface.GetById(tableId, uselessId, queryParams);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -122,8 +132,9 @@ namespace CRUD.Functions
         {
             try
             {
-                _queryValidator.IsTableRequestQueryValide(tableId);
-                _tableInterface.DeleteById(tableId);
+                int uselessId = 0;
+                _pathValidator.IsTableRequestQueryValide(tableId);
+                _tableInterface.DeleteById(tableId, uselessId);
 
                 return new OkResult();
             }
@@ -208,12 +219,13 @@ namespace CRUD.Functions
                 }
                 else
                 {
+                    int uselessId = 0;
                     UpdateTableDto tableDto = JsonConvert.DeserializeObject<UpdateTableDto>(requestBody);
 
                     tableDto.IsValid();
 
-                    _queryValidator.IsTableRequestQueryValide(tableId);
-                    _tableInterface.UpdateById(tableDto, tableId);
+                    _pathValidator.IsTableRequestQueryValide(tableId);
+                    _tableInterface.UpdateById(tableId, uselessId, tableDto);
 
                     return new OkResult();
                 }

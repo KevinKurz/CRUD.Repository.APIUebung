@@ -1,30 +1,18 @@
-﻿using CRUD.Core.TableService;
-using CRUD.DataBank;
+﻿using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
 using CRUD.DataStructures.DTOs.TableDTO;
-using Moq;
 
 namespace CRUD.xUnitTests.Core_TableService
 {
     public class TableServiceExpectedBehavior
     {
-        // Mocklist
-        private List<TableModel> mockList = new List<TableModel>()
-        {
-            new TableModel(2, "Narrentisch"),
-            new TableModel(5, "Prinzentisch"),
-            new TableModel(8, "Königstisch"),
-            new TableModel(10, "Göttertisch")
-        };
-        private TableRepository _fakeRepo;
+        private readonly TableRepository _fakeRepo;
+        private readonly MockConfigurator _helperClass;
+
         public TableServiceExpectedBehavior()
         {
-            // Mock of JsonService
-            Mock<DataService> mockService = new Mock<DataService>(); // You need to mock the Class, which you do not want to be accessed by the test
-            mockService.Setup(m => m.SafeList(mockList)); // Create a fakeMethod of SaveList
-            mockService.Setup(m => m.LoadList()).Returns(mockList); // Create a fakeMethod of LoadList
-
-            _fakeRepo = new TableRepository(mockService.Object);
+            _helperClass = new MockConfigurator();
+            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object);
         }
 
         [Fact]
@@ -36,7 +24,7 @@ namespace CRUD.xUnitTests.Core_TableService
             _fakeRepo.Create(testDto);
             TableModel testModel = Mapper.Map(testDto);
             //Assert
-            Assert.Equivalent(testModel, mockList[^1]); // [^1] is equal to the maximum count -1
+            Assert.Equivalent(testModel, _helperClass.mockList[^1]); // [^1] is equal to the maximum count -1
         }
 
         [Fact]
@@ -50,7 +38,7 @@ namespace CRUD.xUnitTests.Core_TableService
             _fakeRepo.UpdateById(updateDto, 4);
             TableModel testModel = Mapper.Map(updateDto);
             //Assert
-            Assert.Equivalent(testModel, mockList[4]);
+            Assert.Equivalent(testModel, _helperClass.mockList[4]);
         }
 
         [Fact]
@@ -59,7 +47,7 @@ namespace CRUD.xUnitTests.Core_TableService
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable");
             //Act
-            mockList.Add(testModel);
+            _helperClass.mockList.Add(testModel);
             TableDto testDto = (TableDto)_fakeRepo.GetById(4);
             //Assert
             Assert.Equivalent(testDto, testModel);
@@ -71,10 +59,10 @@ namespace CRUD.xUnitTests.Core_TableService
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable");
             //Act
-            mockList.Add(testModel);
+            _helperClass.mockList.Add(testModel);
             List<TableDto> testList = (List<TableDto>)_fakeRepo.GetAll();
             //Assert
-            Assert.Equivalent(testList, mockList);
+            Assert.Equivalent(testList, _helperClass.mockList);
         }
 
         [Fact]
@@ -83,10 +71,10 @@ namespace CRUD.xUnitTests.Core_TableService
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable");
             //Act
-            mockList.Add(testModel);
+            _helperClass.mockList.Add(testModel);
             _fakeRepo.DeleteById(4);
             //Assert
-            Assert.DoesNotContain(testModel, mockList);
+            Assert.DoesNotContain(testModel, _helperClass.mockList);
         }
 
         [Fact]
@@ -95,10 +83,10 @@ namespace CRUD.xUnitTests.Core_TableService
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable");
             //Act
-            mockList.Add(testModel);
+            _helperClass.mockList.Add(testModel);
             _fakeRepo.DeleteAll();
             //Assert
-            Assert.DoesNotContain(testModel, mockList);
+            Assert.DoesNotContain(testModel, _helperClass.mockList);
         }
     }
 }

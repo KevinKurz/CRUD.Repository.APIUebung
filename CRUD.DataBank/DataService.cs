@@ -6,9 +6,9 @@ namespace CRUD.DataBank
     public class DataService : IDataService<IModel>
     {
         private JsonDataBank _jsonDataBank;
-        public DataService()
+        public DataService(JsonDataBank jsonDataBank)
         {
-            _jsonDataBank = new JsonDataBank();
+            _jsonDataBank = jsonDataBank;
         }
 
         public virtual void SafeList(IEnumerable<IModel> availableTables)

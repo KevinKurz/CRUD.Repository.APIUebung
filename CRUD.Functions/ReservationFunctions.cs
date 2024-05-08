@@ -11,16 +11,17 @@ using Microsoft.Azure.Functions.Worker;
 using System.ComponentModel.DataAnnotations;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.AttributeService;
-using CRUD.Core.ReservationService;
 using CRUD.Core;
+using CRUD.Core.Interfaces;
+using CRUD.Core.QueryParams;
 
 namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IReservationRepository<IReservationDto> _reservationInterface;
-        private readonly QueryValidator _queryValidator;
-        public ReservationFunctions(IReservationRepository<IReservationDto> reservationInterface, QueryValidator queryValidator)
+        private readonly IRepository<IReservationDto, ReservationQueryParams> _reservationInterface;
+        private readonly PathValidator _queryValidator;
+        public ReservationFunctions(IRepository<IReservationDto, ReservationQueryParams> reservationInterface, PathValidator queryValidator)
         {
             _reservationInterface = reservationInterface;
             _queryValidator = queryValidator;
@@ -89,11 +90,13 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<ReservationDto>), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult GetAllReservations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}")] int tableId)
+        public IActionResult GetAllReservations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}")] HttpRequest req, int tableId)
         {
             try
             {
-                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(tableId);
+                ReservationQueryParams queryParams = new ReservationQueryParams(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+
+                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(tableId, queryParams);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -116,12 +119,14 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ReservationDto), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
-        public IActionResult GetReservation([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}/{reservationId}")] int tableId, int reservationId)
+        public IActionResult GetReservation([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}/{reservationId}")] HttpRequest req, int tableId, int reservationId)
         {
             try
             {
+                ReservationQueryParams queryParams = new ReservationQueryParams(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+
                 _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId);
+                ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId, queryParams);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
