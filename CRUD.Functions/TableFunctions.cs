@@ -8,23 +8,18 @@ using Microsoft.OpenApi.Models;
 using System.Net;
 using Newtonsoft.Json;
 using CRUD.DataStructures.AttributeService;
-using CRUD.Core;
-using Microsoft.Extensions.Logging;
 using CRUD.Core.QueryParams;
 using AuthorizationLevel = Microsoft.Azure.Functions.Worker.AuthorizationLevel;
 using CRUD.Core.Interfaces;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly IRepository<ITableDto, TableQueryParams> _tableInterface;
-        private readonly PathValidator _pathValidator;
-        public TableFunctions(IRepository<ITableDto, TableQueryParams> tableRepository, PathValidator queryValidator)
+        private readonly IRepository<ITableDto, IQueryParameter, IOptionsParameter> _tableInterface;
+        public TableFunctions(IRepository<ITableDto, IQueryParameter, IOptionsParameter> tableRepository)
         {
             _tableInterface = tableRepository;
-            _pathValidator = queryValidator;
         }
 
         /// <summary>
@@ -39,14 +34,14 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<TableDto>), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult GetAllTables([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables")] HttpRequest req)
+        public IActionResult GetAllTables([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables")] HttpRequest req, int tableId)
         {
             try
             {
-                int uselessId = 0;
-                TableQueryParams queryParams = new TableQueryParams(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+                TableOptionsParameter optionsParameter = new TableOptionsParameter(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+                QueryParameter queryParameter = new QueryParameter(tableId);
 
-                List<TableDto> response = (List<TableDto>)_tableInterface.GetAll(uselessId, queryParams);
+                List<TableDto> response = (List<TableDto>)_tableInterface.GetAll(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -68,16 +63,14 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(TableDto), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult GetSingleTable([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables/{tableId}")] int tableId, HttpRequest req)
+        public IActionResult GetSingleTable([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables/{tableId}")] HttpRequest req, int tableId)
         {
             try
             {
-                int uselessId = 0;
-                _pathValidator.IsTableRequestQueryValide(tableId);
+                TableOptionsParameter optionsParameter = new TableOptionsParameter(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+                QueryParameter queryParameter = new QueryParameter(tableId);
 
-                TableQueryParams queryParams = new TableQueryParams(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
-
-                TableDto response = (TableDto)_tableInterface.GetById(tableId, uselessId, queryParams);
+                TableDto response = (TableDto)_tableInterface.GetById(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -132,9 +125,9 @@ namespace CRUD.Functions
         {
             try
             {
-                int uselessId = 0;
-                _pathValidator.IsTableRequestQueryValide(tableId);
-                _tableInterface.DeleteById(tableId, uselessId);
+                QueryParameter pathParameter = new QueryParameter(tableId);
+
+                _tableInterface.DeleteById(pathParameter);
 
                 return new OkResult();
             }
@@ -219,13 +212,12 @@ namespace CRUD.Functions
                 }
                 else
                 {
-                    int uselessId = 0;
+                    QueryParameter queryParameter = new QueryParameter(tableId);
                     UpdateTableDto tableDto = JsonConvert.DeserializeObject<UpdateTableDto>(requestBody);
 
                     tableDto.IsValid();
 
-                    _pathValidator.IsTableRequestQueryValide(tableId);
-                    _tableInterface.UpdateById(tableId, uselessId, tableDto);
+                    _tableInterface.UpdateById(queryParameter, tableDto);
 
                     return new OkResult();
                 }

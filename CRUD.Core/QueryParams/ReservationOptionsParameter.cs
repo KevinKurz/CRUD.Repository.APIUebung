@@ -1,15 +1,11 @@
 ﻿using CRUD.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CRUD.Core.QueryParams
 {
-    public class ReservationQueryParams : IQueryParams
+    public class ReservationOptionsParameter : IOptionsParameter
     {
-        public ReservationQueryParams(string capacity, string lastName, string startTime, string endTime, string date) 
+
+        public ReservationOptionsParameter(string capacity, string lastName, string startTime, string endTime, string date) 
         {
             if(int.TryParse(capacity, out int result))
             {

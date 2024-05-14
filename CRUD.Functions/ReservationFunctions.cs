@@ -14,17 +14,16 @@ using CRUD.DataStructures.AttributeService;
 using CRUD.Core;
 using CRUD.Core.Interfaces;
 using CRUD.Core.QueryParams;
+using System.Data;
 
 namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IRepository<IReservationDto, ReservationQueryParams> _reservationInterface;
-        private readonly PathValidator _queryValidator;
-        public ReservationFunctions(IRepository<IReservationDto, ReservationQueryParams> reservationInterface, PathValidator queryValidator)
+        private readonly IRepository<IReservationDto, IQueryParameter, IOptionsParameter> _reservationInterface;
+        public ReservationFunctions(IRepository<IReservationDto, IQueryParameter, IOptionsParameter> reservationInterface)
         {
             _reservationInterface = reservationInterface;
-            _queryValidator = queryValidator;
         }
 
         /// <summary>
@@ -94,9 +93,10 @@ namespace CRUD.Functions
         {
             try
             {
-                ReservationQueryParams queryParams = new ReservationQueryParams(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                QueryParameter queryParameter = new QueryParameter(tableId);
+                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
 
-                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(tableId, queryParams);
+                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -123,10 +123,10 @@ namespace CRUD.Functions
         {
             try
             {
-                ReservationQueryParams queryParams = new ReservationQueryParams(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
 
-                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId, queryParams);
+                ReservationDto response = (ReservationDto)_reservationInterface.GetById(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -178,8 +178,9 @@ namespace CRUD.Functions
         {
             try
             {
-                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                _reservationInterface.DeleteById(tableId, reservationId);
+                QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
+
+                _reservationInterface.DeleteById(queryParameter);
                 return new OkResult();
             }
             catch (ArgumentOutOfRangeException ex)
@@ -216,11 +217,12 @@ namespace CRUD.Functions
                 }
                 else
                 {
+                    QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
                     UpdateReservationDto reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
 
                     reservationDto.IsValid();
-                    _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                    _reservationInterface.UpdateById(tableId, reservationId, reservationDto);
+
+                    _reservationInterface.UpdateById(queryParameter, reservationDto);
 
                     return new OkResult();
                 }

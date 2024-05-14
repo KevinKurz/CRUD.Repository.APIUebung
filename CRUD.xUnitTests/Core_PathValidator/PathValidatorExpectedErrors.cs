@@ -1,4 +1,5 @@
 ﻿using CRUD.Core;
+using CRUD.Core.QueryParams;
 using CRUD.DataStructures.DataModel;
 
 namespace CRUD.xUnitTests.Core_PathValidator
@@ -17,31 +18,19 @@ namespace CRUD.xUnitTests.Core_PathValidator
         [InlineData(0, -1)]
         [InlineData(0, 2)]
         [InlineData(-1, 0)]
-        [InlineData(2, 0)]
-        public void Core_QueryValidator_IsReservationRequestQueryValide_ArgumentOutOfRangeException(int tableId, int rerservationId)
+        [InlineData(7, 0)]
+        public void Core_QueryValidator_IsPathParameterValide_ArgumentOutOfRangeException(int tableId, int rerservationId)
         {
             //Arrange
-            ReservationModel listFiller = new ReservationModel(1, "test", "2:00", "4:00", "1.1.1001");
-            //Act
-            _helperClass.mockList[0].Availability.Add(listFiller);
-            //Assert
-            ArgumentOutOfRangeException ex;
-            ex = Assert.Throws<ArgumentOutOfRangeException>(() => _fakeValidator.IsReservationRequestQueryValide(tableId, rerservationId));
-            Assert.Contains("You are looking out of your available range", ex.Message);
-        }
+            int capacity = 1;
+            ReservationModel listFiller = new ReservationModel(capacity, "test", "2:00", "4:00", "1.1.1001");
+            QueryParameter pathParameter = new QueryParameter(tableId, rerservationId);
 
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(6)]
-        public void Core_QueryValidator_IsTableRequestQueryValide_ArgumentOutOfRangeException(int tableId)
-        {
-            //Arrange
-            ReservationModel listFiller = new ReservationModel(1, "test", "2:00", "4:00", "1.1.1001");
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
             //Assert
             ArgumentOutOfRangeException ex;
-            ex = Assert.Throws<ArgumentOutOfRangeException>(() => _fakeValidator.IsTableRequestQueryValide(tableId));
+            ex = Assert.Throws<ArgumentOutOfRangeException>(() => _fakeValidator.IsPathParameterValide(pathParameter));
             Assert.Contains("You are looking out of your available range", ex.Message);
         }
     }

@@ -1,20 +1,14 @@
 ﻿using CRUD.Core.Interfaces;
-using CRUD.DataStructures.DataModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CRUD.Core.QueryParams
 {
-    public class TableQueryParams : IQueryParams
+    public class TableOptionsParameter : IOptionsParameter
     {
-        public TableQueryParams(string capacity, string name, string availability) 
+        public TableOptionsParameter(string capacity, string name, string availability)
         {
-            if (int.TryParse(capacity, out int result))
+            if (int.TryParse(capacity, out int resultCapacity))
             {
-                _capacity = result;
+                _capacity = resultCapacity;
             }
             _name = name;
             _availability = availability;

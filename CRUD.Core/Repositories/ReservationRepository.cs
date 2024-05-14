@@ -3,15 +3,18 @@ using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.DTOs.TableDTO;
 using CRUD.DataStructures.DataModel;
 using CRUD.Core.Interfaces;
+using CRUD.Core.QueryParams;
 
 namespace CRUD.Core.Repositories
 {
-    public class ReservationRepository : IReservationRepository<IReservationDto>
+    public class ReservationRepository : IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter>
     {
-        private IDataService<IModel> _jsonService;
-        public ReservationRepository(IDataService<IModel> jsonService) // Create a constructor, in which you define which JsonService you want to include
+        private readonly IDataService<IModel> _jsonService;
+        private readonly PathValidator _pathValidator;
+        public ReservationRepository(IDataService<IModel> jsonService, PathValidator pathValidator) // Create a constructor, in which you define which JsonService you want to include
         {
             _jsonService = jsonService;
+            _pathValidator = pathValidator;
         }
 
         /// <summary>
@@ -20,10 +23,12 @@ namespace CRUD.Core.Repositories
         /// </summary>
         /// <param name="tableID"></param>
         /// <returns>List of <see cref="ReservationDto"/></returns>
-        public IEnumerable<IReservationDto> GetAll(int tableID)
+        public IEnumerable<IReservationDto> GetAll(QueryParameter queryParameter, ReservationOptionsParameter optionsParameter)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
             // get TableModel from JSON Table List per index
-            TableModel tableModel = (TableModel)_jsonService.LoadList().ElementAt(tableID);
+            TableModel tableModel = (TableModel)_jsonService.LoadList().ElementAt(tableId);
 
             // Create temp List of reservations from the mapped table
             TableDto tableDto = Mapper.Map(tableModel);
@@ -45,8 +50,11 @@ namespace CRUD.Core.Repositories
         /// <param name="tableId"></param>
         /// <param name="reservationId"></param>
         /// <returns><see cref="ReservationDto"/></returns>
-        public IReservationDto GetById(int tableId, int reservationId)
+        public IReservationDto GetById(QueryParameter queryParameter, ReservationOptionsParameter optionsParameter)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
+            int reservationId = queryParameter.ReservationId;
             ReservationModel tableModel = ((TableModel)_jsonService.LoadList().ElementAt(tableId)).Availability.ElementAt(reservationId); //"double"cast nessecary
 
             ReservationDto tableDto = Mapper.Map(tableModel);
@@ -106,8 +114,12 @@ namespace CRUD.Core.Repositories
         /// <param name="reservationId"></param>
         /// <param name="reservation"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void UpdateById(int tableId, int reservationId, IReservationDto reservation)
+        public void UpdateById(QueryParameter queryParameter, IReservationDto reservation)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
+            int reservationId = queryParameter.ReservationId;
+
             ReservationModel updateModel = Mapper.Map((UpdateReservationDto)reservation);
 
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
@@ -153,8 +165,11 @@ namespace CRUD.Core.Repositories
         /// </summary>
         /// <param name="tableId"></param>
         /// <param name="reservationId"></param>
-        public void DeleteById(int tableId, int reservationId)
+        public void DeleteById(QueryParameter queryParameter)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
+            int reservationId = queryParameter.ReservationId;
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             tempList[tableId].Availability.RemoveAt(reservationId);

@@ -6,65 +6,22 @@ using CRUD.DataStructures.DTOs.TableDTO;
 
 namespace CRUD.Core.Repositories
 {
-    public class TableRepository : ITableRepository<ITableDto, IQueryParams>
+    public class TableRepository : IRepository<ITableDto, QueryParameter, TableOptionsParameter>
     {
-        private IDataService<IModel> _jsonService;
-        public TableRepository(IDataService<IModel> jsonService)
+        private readonly IDataService<IModel> _jsonService;
+        private readonly PathValidator _pathValidator;
+        public TableRepository(IDataService<IModel> jsonService, PathValidator pathValidator)
         {
             _jsonService = jsonService;
+            _pathValidator = pathValidator;
         }
 
         /// <summary>
         /// Transforms a List of <see cref="TableModel"/> to a List of <see cref="TableDto"/><br/>
-        /// Includes a <see cref="IQueryParams"/> for filtering
+        /// Includes a <see cref="IOptionsParameter"/> for filtering
         /// </summary>
         /// <returns>List of <see cref="TableDto"/></returns>
-        public IEnumerable<ITableDto> GetAll(IQueryParams query)
-        {
-            TableQueryParams tableParams = (TableQueryParams)query;
-            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
-
-            List<TableDto> dtoList = new List<TableDto>();
-
-            foreach (TableModel model in tempList)
-            {
-                TableDto dto = Mapper.Map(model);
-                dtoList.Add(dto);
-            }
-
-            //dtoList.OrderBy(t => t.Name).Skip(tableParams.PageSize).Take(tableParams.PageSize); Pagination, kommt später
-
-            return dtoList;
-        }
-
-        /// <summary>
-        /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/><br/>
-        /// Includes a <see cref="IQueryParams"/> for filtering
-        /// </summary>
-        /// <param name="tableNumber"></param>
-        /// <returns><see cref="TableDto"/></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ITableDto GetById(int tableNumber, IQueryParams query)
-        {
-            List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
-
-            if (tableNumber >= 0 && tableNumber <= tempList.Count - 1)
-            {
-                TableModel model = tempList[tableNumber];
-                TableDto dto = Mapper.Map(model);
-                return dto;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("You try to get a table which is not existing");
-            }
-        }
-
-        /// <summary>
-        /// Transforms a List of <see cref="TableModel"/> to a List of <see cref="TableDto"/>
-        /// </summary>
-        /// <returns>List of <see cref="TableDto"/></returns>
-        public IEnumerable<ITableDto> GetAll()
+        public IEnumerable<ITableDto> GetAll(QueryParameter queryParameter, TableOptionsParameter optionsParameter)
         {
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
@@ -79,25 +36,21 @@ namespace CRUD.Core.Repositories
         }
 
         /// <summary>
-        /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/>
+        /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableId"/><br/>
+        /// Includes a <see cref="IOptionsParameter"/> for filtering
         /// </summary>
-        /// <param name="tableNumber"></param>
+        /// <param name="tableId"></param>
         /// <returns><see cref="TableDto"/></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ITableDto GetById(int tableNumber)
+        public ITableDto GetById(QueryParameter queryParameter, TableOptionsParameter optionsParameter)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
-            if (tableNumber >= 0 && tableNumber <= tempList.Count - 1)
-            {
-                TableModel model = tempList[tableNumber];
-                TableDto dto = Mapper.Map(model);
-                return dto;
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("You try to get a table which is not existing");
-            }
+            TableModel model = tempList[tableId];
+            TableDto dto = Mapper.Map(model);
+            return dto;
         }
 
         /// <summary>
@@ -130,18 +83,20 @@ namespace CRUD.Core.Repositories
 
         /// <summary>
         /// <paramref name="tableDto"/> must be a type of <see cref="UpdateTableDto"/><br/>
-        /// <paramref name="tableNumber"/> must be grater then 3
+        /// <paramref name="tableId"/> must be grater then 3
         /// </summary>
         /// <param name="tableDto"></param>
-        /// <param name="tableNumber"></param>
+        /// <param name="tableId"></param>
         /// <exception cref="NotImplementedException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void UpdateById(ITableDto tableDto, int tableNumber)
+        public void UpdateById(QueryParameter queryParameter, ITableDto tableDto)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
             int currentCapacity = 0;
+            int tableId = queryParameter.TableId;
 
-            //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
-            if (tableNumber > 3)
+            //Check that tableNumber is bigger than the basetables
+            if (tableId > 3)
             {
                 TableModel model = Mapper.Map((UpdateTableDto)tableDto);
                 List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
@@ -153,9 +108,9 @@ namespace CRUD.Core.Repositories
                 }
 
                 //Model to be updated is considered in the summary of the whole capacity
-                if (currentCapacity + model.Kapacity - tempList[tableNumber].Kapacity <= 50)
+                if (currentCapacity + model.Kapacity - tempList[tableId].Kapacity <= 50)
                 {
-                    tempList[tableNumber] = model;
+                    tempList[tableId] = model;
                     _jsonService.SafeList(tempList);
                 }
                 else
@@ -183,23 +138,25 @@ namespace CRUD.Core.Repositories
         }
 
         /// <summary>
-        /// Delete one table from the List of <see cref="TableModel"/> by the index <paramref name="tableNumber"/>
+        /// Delete one table from the List of <see cref="TableModel"/> by the index <paramref name="tableId"/>
         /// </summary>
-        /// <param name="tableNumber"></param>
+        /// <param name="tableId"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void DeleteById(int tableNumber)
+        public void DeleteById(QueryParameter queryParameter)
         {
+            _pathValidator.IsPathParameterValide(queryParameter);
+            int tableId = queryParameter.TableId;
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
             //Check that tableNumber is bigger than the basetables
-            if (tableNumber <= tempList.Count - 1 && tableNumber > 3)
+            if (tableId > 3)
             {
-                tempList.RemoveAt(tableNumber);
+                tempList.RemoveAt(tableId);
                 _jsonService.SafeList(tempList);
             }
             else
             {
-                throw new ArgumentOutOfRangeException("You either try to delete one of your base tables or you try to delete out of your range");
+                throw new ArgumentOutOfRangeException("You try to delete one of your base tables");
             }
         }
     }

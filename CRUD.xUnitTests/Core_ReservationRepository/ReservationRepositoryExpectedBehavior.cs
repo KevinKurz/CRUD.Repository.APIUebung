@@ -1,22 +1,24 @@
-﻿using CRUD.Core.Repositories;
+﻿using CRUD.Core;
+using CRUD.Core.QueryParams;
+using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 
-namespace CRUD.xUnitTests.Core_ReservationService
+namespace CRUD.xUnitTests.Core_ReservationRepository
 {
-    public class ReservationServiceExpectedBehavior
+    public class ReservationRepositoryExpectedBehavior
     {
 
         private readonly ReservationRepository _fakeRepo;
         private readonly MockConfigurator _helperClass;
-        public ReservationServiceExpectedBehavior()
+        public ReservationRepositoryExpectedBehavior()
         {
             _helperClass = new MockConfigurator();
-            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object);
+            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object));
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_Create_Successfull()
+        public void Core_Repository_ReservationRepository_Create_Successfull()
         {
             //Arrange
             CreateReservationDto testDto = new CreateReservationDto(1, "test", "2:00", "4:00", "1.1.1001");
@@ -28,16 +30,17 @@ namespace CRUD.xUnitTests.Core_ReservationService
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_Update_Successfull()
+        public void Core_Repository_ReservationRepository_UpdateByID_Successfull()
         {
             //Arrange
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
             ReservationModel createDto = new ReservationModel(1, "test", "1:00", "4:00", "2.1.1001");
             UpdateReservationDto updateDto = new UpdateReservationDto(1, "test", "1:00", "4:00", "3.1.1001");
+            QueryParameter queryParameter = new QueryParameter(0, 1);
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
             _helperClass.mockList[0].Availability.Add(createDto);
-            _fakeRepo.UpdateById(0, 1, updateDto);
+            _fakeRepo.UpdateById(queryParameter, updateDto);
             ReservationModel testModel = Mapper.Map(updateDto);
 
             //Assert
@@ -45,7 +48,7 @@ namespace CRUD.xUnitTests.Core_ReservationService
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_DeleteAll_Successfull()
+        public void Core_Repository_ReservationRepository_DeleteAll_Successfull()
         {
             //Arrange
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
@@ -57,38 +60,48 @@ namespace CRUD.xUnitTests.Core_ReservationService
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_DeletyById_Successfull()
+        public void Core_Repository_ReservationRepository_DeletyById_Successfull()
         {
             //Arrange
+            int tableId = 0;
+            int reservationId = 0;
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
+            QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
-            _fakeRepo.DeleteById(0, 0);
+            _fakeRepo.DeleteById(queryParameter);
             //Assert
             Assert.DoesNotContain(listFiller, _helperClass.mockList[0].Availability);
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_GetAll_Successfull()
+        public void Core_Repository_ReservationRepository_GetAll_Successfull()
         {
             //Arrange
+            int tableId = 0;
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
+            ReservationOptionsParameter optionsParameter = new("", "", "", "", "");
+            QueryParameter queryParameter = new QueryParameter(tableId);
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
-            List<ReservationDto> testList = (List<ReservationDto>)_fakeRepo.GetAll(0);
+            List<ReservationDto> testList = (List<ReservationDto>)_fakeRepo.GetAll(queryParameter, optionsParameter);
             //Assert
             Assert.Equivalent(testList, _helperClass.mockList[0].Availability);
         }
 
         [Fact]
-        public void Core_ReservationService_ReservationRepository_GetById_Successfull()
+        public void Core_Repository_ReservationRepository_GetById_Successfull()
         {
             //Arrange
+            int tableId = 0;
+            int reservationId = 0;
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
+            QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
+            ReservationOptionsParameter optionsParameter = new("", "", "", "", "");
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
             ReservationDto shouldBeDto = Mapper.Map(listFiller);
-            ReservationDto testDto = (ReservationDto)_fakeRepo.GetById(0, 0);
+            ReservationDto testDto = (ReservationDto)_fakeRepo.GetById(queryParameter, optionsParameter);
             //Assert
             Assert.Equivalent(shouldBeDto, testDto);
         }
