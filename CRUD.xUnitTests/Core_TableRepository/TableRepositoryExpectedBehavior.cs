@@ -63,7 +63,7 @@ namespace CRUD.xUnitTests.Core_TableRepository
         {
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable"); ;
-            QueryParameter queryParameter = new QueryParameter(4);
+            QueryParameter queryParameter = new QueryParameter();
             TableOptionsParameter optionsParameter = new("", "", "");
             //Act
             _helperClass.mockList.Add(testModel);

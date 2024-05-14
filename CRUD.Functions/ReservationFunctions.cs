@@ -11,17 +11,15 @@ using Microsoft.Azure.Functions.Worker;
 using System.ComponentModel.DataAnnotations;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.AttributeService;
-using CRUD.Core;
 using CRUD.Core.Interfaces;
 using CRUD.Core.QueryParams;
-using System.Data;
 
 namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IRepository<IReservationDto, IQueryParameter, IOptionsParameter> _reservationInterface;
-        public ReservationFunctions(IRepository<IReservationDto, IQueryParameter, IOptionsParameter> reservationInterface)
+        private readonly IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter> _reservationInterface;
+        public ReservationFunctions(IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter> reservationInterface)
         {
             _reservationInterface = reservationInterface;
         }
@@ -174,7 +172,7 @@ namespace CRUD.Functions
         [OpenApiParameter(name: "reservationId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
-        public IActionResult DeleteReservation([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations/{tableId}/{reservationId}")] int tableId, int reservationId)
+        public IActionResult DeleteReservation([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations/{tableId}/{reservationId}")] HttpRequest req, int tableId, int reservationId)
         {
             try
             {

@@ -16,10 +16,10 @@ namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly IRepository<ITableDto, IQueryParameter, IOptionsParameter> _tableInterface;
-        public TableFunctions(IRepository<ITableDto, IQueryParameter, IOptionsParameter> tableRepository)
+        private readonly IRepository<ITableDto, QueryParameter, TableOptionsParameter> _tableInterface;
+        public TableFunctions(IRepository<ITableDto, QueryParameter, TableOptionsParameter> tableInterface)
         {
-            _tableInterface = tableRepository;
+            _tableInterface = tableInterface;
         }
 
         /// <summary>
@@ -34,12 +34,12 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<TableDto>), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult GetAllTables([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables")] HttpRequest req, int tableId)
+        public IActionResult GetAllTables([HttpTrigger(AuthorizationLevel.Function, "get", Route = "tables")] HttpRequest req)
         {
             try
             {
                 TableOptionsParameter optionsParameter = new TableOptionsParameter(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
-                QueryParameter queryParameter = new QueryParameter(tableId);
+                QueryParameter queryParameter = new QueryParameter();
 
                 List<TableDto> response = (List<TableDto>)_tableInterface.GetAll(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
@@ -121,7 +121,7 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public IActionResult DeleteSingleTable([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "tables/{tableId}")] int tableId)
+        public IActionResult DeleteSingleTable([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "tables/{tableId}")] HttpRequest req, int tableId)
         {
             try
             {

@@ -8,6 +8,7 @@ using CRUD.DataStructures.DataModel;
 using CRUD.Core.Interfaces;
 using CRUD.Core.Repositories;
 using CRUD.Core.QueryParams;
+using CRUD.Core;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -19,7 +20,7 @@ var host = new HostBuilder()
         services.AddSingleton<IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter>, ReservationRepository>();
         services.AddSingleton<IRepository<ITableDto, QueryParameter, TableOptionsParameter>, TableRepository>();
         services.AddSingleton<IDataService<IModel>, DataService>();
-        services.AddSingleton<JsonDataBank>();
+        services.AddSingleton<PathValidator>();
     })
     .Build();
 

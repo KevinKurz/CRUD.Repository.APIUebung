@@ -4,6 +4,7 @@ namespace CRUD.Core.QueryParams
 {
     public class QueryParameter : IQueryParameter
     {
+        public QueryParameter() { }
         public QueryParameter(int tableId)
         {
             _tableId = tableId;
