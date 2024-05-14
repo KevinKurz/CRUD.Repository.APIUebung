@@ -6,7 +6,7 @@ namespace CRUD.DataStructures.DataModel
     /// <summary>
     /// Defines the SQL Main Table
     /// </summary>
-    public class TableModel
+    public class TableModel : IModel
     {
         // PrimaryKey for SQL Database
         private int id;
@@ -26,7 +26,7 @@ namespace CRUD.DataStructures.DataModel
             get { return reservationId; }
             set { reservationId = value; }
         }
-        public virtual ReservationModel ReservationModel { get; set; }
+        //public virtual ReservationModel ReservationModel { get; set; }
 
 
         private int kapacity;

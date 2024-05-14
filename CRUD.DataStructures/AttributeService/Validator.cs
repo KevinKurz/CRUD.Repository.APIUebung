@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using CRUD.DataStructures.DTOs;
 
 namespace CRUD.DataStructures.AttributeService
 {

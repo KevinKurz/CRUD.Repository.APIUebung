@@ -5,7 +5,7 @@ namespace CRUD.DataStructures.DataModel
     /// <summary>
     /// Defines the SQL Secondary Table, which is linked through an ForeignKey defined in the TableModelClass
     /// </summary>
-    public class ReservationModel
+    public class ReservationModel : IModel
     {
         // PrimaryKey for SQL Database
         private int id;

@@ -11,24 +11,30 @@ using Microsoft.Azure.Functions.Worker;
 using System.ComponentModel.DataAnnotations;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.AttributeService;
-using CRUD.Core.ReservationService;
 using CRUD.Core;
+using CRUD.Core.Interfaces;
+using CRUD.Core.QueryParams;
+using System.Data;
 
-namespace CRUD.TableFunctions
+namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IReservationRepository<IReservationDto> _reservationInterface;
-        private readonly QueryValidator _queryValidator;
-        public ReservationFunctions(IReservationRepository<IReservationDto> reservationRepository, QueryValidator queryValidator)
+        private readonly IRepository<IReservationDto, IQueryParameter, IOptionsParameter> _reservationInterface;
+        public ReservationFunctions(IRepository<IReservationDto, IQueryParameter, IOptionsParameter> reservationInterface)
         {
-            _reservationInterface = reservationRepository;
-            _queryValidator = queryValidator;
+            _reservationInterface = reservationInterface;
         }
 
-        // ------------------------------------------------------------------
-        // Post Reservation
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Post a reservationy by requestBody
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>
+        /// <see cref="StatusCodes.Status201Created"/><br/>
+        /// <see cref="StatusCodes.Status400BadRequest"/><br/>
+        /// <see cref="BadRequestObjectResult"/>
+        /// </returns>
         [Function("POST_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
@@ -41,12 +47,19 @@ namespace CRUD.TableFunctions
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                CreateReservationDto reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
 
-                reservationDto.IsValid();
-                _reservationInterface.Create(reservationDto);
+                if (string.IsNullOrEmpty(requestBody))
+                {
+                    return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                }
+                else
+                {
+                    CreateReservationDto reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
+                    reservationDto.IsValid();
+                    _reservationInterface.Create(reservationDto);
 
-                return new StatusCodeResult(StatusCodes.Status201Created);
+                    return new StatusCodeResult(StatusCodes.Status201Created);
+                }
             }
             catch (NotImplementedException ex)
             {
@@ -62,31 +75,43 @@ namespace CRUD.TableFunctions
             }
         }
 
-        // ------------------------------------------------------------------
-        // Get All Reservations
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Get all reservations
+        /// </summary>
+        /// <param name="tableId"></param>
+        /// <returns>
+        /// <see cref="OkObjectResult"/><br/>
+        /// <see cref="BadRequestObjectResult"/>
+        /// </returns>
         [Function("GET_All_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiParameter(name: "tableId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<ReservationDto>), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public async Task<IActionResult> GetAllReservations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}")] HttpRequest req, int tableId)
+        public IActionResult GetAllReservations([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}")] HttpRequest req, int tableId)
         {
             try
             {
-                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(tableId);
+                QueryParameter queryParameter = new QueryParameter(tableId);
+                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+
+                List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new BadRequestObjectResult("Something unexpected happend");
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
-        // ------------------------------------------------------------------
-        // Get Single Reservation
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Get reservation by ID
+        /// </summary>
+        /// <returns>
+        /// <see cref="OkObjectResult"/><br/>
+        /// <see cref="BadRequestObjectResult"/>
+        /// </returns>
         [Function("GET_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiParameter(name: "tableId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
@@ -94,12 +119,14 @@ namespace CRUD.TableFunctions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ReservationDto), Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
-        public async Task<IActionResult> GetReservation([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}/{reservationId}")] HttpRequest req, int tableId, int reservationId)
+        public IActionResult GetReservation([HttpTrigger(AuthorizationLevel.Function, "get", Route = "reservations/{tableId}/{reservationId}")] HttpRequest req, int tableId, int reservationId)
         {
             try
             {
-                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                ReservationDto response = (ReservationDto)_reservationInterface.GetById(tableId, reservationId);
+                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
+
+                ReservationDto response = (ReservationDto)_reservationInterface.GetById(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -108,30 +135,38 @@ namespace CRUD.TableFunctions
             }
         }
 
-        // ------------------------------------------------------------------
-        // Delete All Reservations
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Delete all reservations
+        /// </summary>
+        /// <returns>
+        /// <see cref="OkResult"/><br/>
+        /// <see cref="BadRequestObjectResult"/>
+        /// </returns>
         [Function("DELETE_All_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
-        public async Task<IActionResult> DeleteAllReservations([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations")] HttpRequest req)
+        public IActionResult DeleteAllReservations([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations")] HttpRequest req)
         {
             try
             {
                 _reservationInterface.DeleteAll();
                 return new OkResult();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new BadRequestObjectResult("Something unexpected happend");
+                return new BadRequestObjectResult(ex.Message);
             }
         }
 
-        // ------------------------------------------------------------------
-        // Delete Single Reservation
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Delete reservation by ID
+        /// </summary>
+        /// <returns>
+        /// <see cref="OkResult"/><br/>
+        /// <see cref="BadRequestObjectResult"/>
+        /// </returns>
         [Function("DELETE_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
@@ -139,12 +174,13 @@ namespace CRUD.TableFunctions
         [OpenApiParameter(name: "reservationId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
-        public async Task<IActionResult> DeleteReservation([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations/{tableId}/{reservationId}")] HttpRequest req, int tableId, int reservationId)
+        public IActionResult DeleteReservation([HttpTrigger(AuthorizationLevel.Function, "delete", Route = "reservations/{tableId}/{reservationId}")] int tableId, int reservationId)
         {
             try
             {
-                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                _reservationInterface.DeleteById(tableId, reservationId);
+                QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
+
+                _reservationInterface.DeleteById(queryParameter);
                 return new OkResult();
             }
             catch (ArgumentOutOfRangeException ex)
@@ -153,9 +189,14 @@ namespace CRUD.TableFunctions
             }
         }
 
-        // ------------------------------------------------------------------
-        // Put Reservation
-        // ------------------------------------------------------------------
+        /// <summary>
+        /// Put reservation by requestBody and by ID
+        /// </summary>
+        /// <returns>
+        /// <see cref="OkResult"/><br/>
+        /// <see cref="BadRequestObjectResult"/><br/>
+        /// <see cref="StatusCodes.Status400BadRequest"/>
+        /// </returns>
         [Function("PUT_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
@@ -170,14 +211,21 @@ namespace CRUD.TableFunctions
             try
             {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                UpdateReservationDto reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
+                if (string.IsNullOrEmpty(requestBody))
+                {
+                    return new StatusCodeResult(StatusCodes.Status400BadRequest);
+                }
+                else
+                {
+                    QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
+                    UpdateReservationDto reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
 
-                reservationDto.IsValid();
+                    reservationDto.IsValid();
 
-                _queryValidator.IsReservationRequestQueryValide(tableId, reservationId);
-                _reservationInterface.UpdateById(tableId, reservationId, reservationDto);
+                    _reservationInterface.UpdateById(queryParameter, reservationDto);
 
-                return new OkResult();
+                    return new OkResult();
+                }
             }
             catch (NotImplementedException ex)
             {

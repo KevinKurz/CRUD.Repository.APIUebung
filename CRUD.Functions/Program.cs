@@ -1,12 +1,13 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CRUD.Core.ReservationService;
-using CRUD.Core.TableService;
 using CRUD.DataStructures.DTOs.TableDTO;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataBank;
-using CRUD.Core;
+using CRUD.DataStructures.DataModel;
+using CRUD.Core.Interfaces;
+using CRUD.Core.Repositories;
+using CRUD.Core.QueryParams;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -15,10 +16,10 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddSingleton<IReservationRepository<IReservationDto>, ReservationRepository>();
-        services.AddSingleton<ITableRepository<ITableDto>, TableRepository>();
-        services.AddSingleton<JsonService>();
-        services.AddSingleton<QueryValidator>();
+        services.AddSingleton<IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter>, ReservationRepository>();
+        services.AddSingleton<IRepository<ITableDto, QueryParameter, TableOptionsParameter>, TableRepository>();
+        services.AddSingleton<IDataService<IModel>, DataService>();
+        services.AddSingleton<JsonDataBank>();
     })
     .Build();
 
