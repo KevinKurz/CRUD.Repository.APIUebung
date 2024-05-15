@@ -4,17 +4,20 @@ using CRUD.DataStructures.DTOs.TableDTO;
 using CRUD.DataStructures.DataModel;
 using CRUD.Core.Interfaces;
 using CRUD.Core.QueryParams;
+using CRUD.Core.Filter;
 
 namespace CRUD.Core.Repositories
 {
-    public class ReservationRepository : IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter>
+    public class ReservationRepository : IRepository<IReservationDto, QueryParameter, OptionsParameter>
     {
         private readonly IDataService<IModel> _jsonService;
         private readonly PathValidator _pathValidator;
-        public ReservationRepository(IDataService<IModel> jsonService, PathValidator pathValidator) // Create a constructor, in which you define which JsonService you want to include
+        private readonly ReservationFilterService _filterService;
+        public ReservationRepository(IDataService<IModel> jsonService, PathValidator pathValidator, ReservationFilterService filterService) // Create a constructor, in which you define which JsonService you want to include
         {
             _jsonService = jsonService;
             _pathValidator = pathValidator;
+            _filterService = filterService;
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace CRUD.Core.Repositories
         /// </summary>
         /// <param name="tableID"></param>
         /// <returns>List of <see cref="ReservationDto"/></returns>
-        public IEnumerable<IReservationDto> GetAll(QueryParameter queryParameter, ReservationOptionsParameter optionsParameter)
+        public IEnumerable<IReservationDto> GetAll(QueryParameter queryParameter, OptionsParameter optionsParameter)
         {
             _pathValidator.IsPathParameterValide(queryParameter);
             int tableId = queryParameter.TableId;
@@ -40,6 +43,8 @@ namespace CRUD.Core.Repositories
                 tableDto.Availability.Add(reservationDto);
             }
 
+            tableDto.Availability = _filterService.Filter(optionsParameter, tableDto.Availability);
+
             return tableDto.Availability;
         }
 
@@ -50,7 +55,7 @@ namespace CRUD.Core.Repositories
         /// <param name="tableId"></param>
         /// <param name="reservationId"></param>
         /// <returns><see cref="ReservationDto"/></returns>
-        public IReservationDto GetById(QueryParameter queryParameter, ReservationOptionsParameter optionsParameter)
+        public IReservationDto GetById(QueryParameter queryParameter, OptionsParameter optionsParameter)
         {
             _pathValidator.IsPathParameterValide(queryParameter);
             int tableId = queryParameter.TableId;
@@ -77,7 +82,7 @@ namespace CRUD.Core.Repositories
 
             int tableNumber = 0;
 
-            while (createModel.Kapacity > tempList[tableNumber].Kapacity)
+            while (createModel.Kapacity > tempList[tableNumber].Capacity)
             {
                 tableNumber++;
             }
@@ -129,7 +134,7 @@ namespace CRUD.Core.Repositories
 
             int tableNumber = 0;
 
-            while (updateModel.Kapacity > tempList[tableNumber].Kapacity)
+            while (updateModel.Kapacity > tempList[tableNumber].Capacity)
             {
                 tableNumber++;
             }

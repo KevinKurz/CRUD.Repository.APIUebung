@@ -1,4 +1,5 @@
 ﻿using CRUD.Core;
+using CRUD.Core.Filter;
 using CRUD.Core.QueryParams;
 using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
@@ -14,7 +15,7 @@ namespace CRUD.xUnitTests.Core_TableRepository
         public TableRepositoryExpectedBehavior()
         {
             _helperClass = new MockConfigurator();
-            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object));
+            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object), new TableFilterService());
         }
 
         [Fact]
@@ -49,7 +50,7 @@ namespace CRUD.xUnitTests.Core_TableRepository
         {
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable");
-            TableOptionsParameter optionsParameter = new("", "", "");
+            OptionsParameter optionsParameter = new("", "");
             QueryParameter queryParameter = new QueryParameter(4);
             //Act
             _helperClass.mockList.Add(testModel);
@@ -64,7 +65,7 @@ namespace CRUD.xUnitTests.Core_TableRepository
             //Arrange
             TableModel testModel = new TableModel(1, "GoodTable"); ;
             QueryParameter queryParameter = new QueryParameter();
-            TableOptionsParameter optionsParameter = new("", "", "");
+            OptionsParameter optionsParameter = new("", "");
             //Act
             _helperClass.mockList.Add(testModel);
             List<TableDto> testList = (List<TableDto>)_fakeRepo.GetAll(queryParameter, optionsParameter);

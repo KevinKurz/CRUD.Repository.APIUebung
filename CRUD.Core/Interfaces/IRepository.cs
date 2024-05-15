@@ -2,18 +2,18 @@
 
 namespace CRUD.Core.Interfaces
 {
-    public interface IRepository<T, PathParameter, OptionsParameter> 
+    public interface IRepository<T, QueryParameter, OptionsParameter> 
     {
         /// <summary>
         /// </summary>
         /// <returns>List of <see cref="IDto"/></returns>
-        IEnumerable<T> GetAll(PathParameter pathParameter, OptionsParameter optionsParameter);
+        IEnumerable<T> GetAll(QueryParameter queryParameter, OptionsParameter optionsParameter);
 
         /// <summary>
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Type of <see cref="IDto"/></returns>
-        T GetById(PathParameter pathParameter, OptionsParameter optionsParameter);
+        T GetById(QueryParameter queryParameter, OptionsParameter optionsParameter);
 
         /// <summary>
         /// <see cref="T"/> must be a CreateType of <see cref="IDto"/>
@@ -27,12 +27,12 @@ namespace CRUD.Core.Interfaces
         /// <param name="tableId"></param>
         /// <param name="reservationId"></param>
         /// <param name="dto"></param>
-        void UpdateById(PathParameter pathParameter, T dto);
+        void UpdateById(QueryParameter queryParameter, T dto);
 
         /// <summary>
         /// Delete reservation of the Type <see cref="ReservationDto"/>by ID <br/>
         /// </summary>
-        void DeleteById(PathParameter pathParameter);
+        void DeleteById(QueryParameter queryParameter);
 
         /// <summary>
         /// Deletre all reservations of the Type  <see cref="IDto"/>

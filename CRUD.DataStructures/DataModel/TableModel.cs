@@ -9,38 +9,38 @@ namespace CRUD.DataStructures.DataModel
     public class TableModel : IModel
     {
         // PrimaryKey for SQL Database
-        private int id;
+        private int _id;
         [Key]
         public int Id
         {
-            get { return id; }
-            set { id = value; }
+            get { return _id; }
+            set { _id = value; }
         }
 
         // ForeignKey, to reference to the PrimaryKey in the ReservationModelClass
         // Equals the List of Reservation in the DTO Class
-        private int reservationId;
+        private int _reservationId;
         [ForeignKey("ReservationModel")]
         public int ReservationId
         {
-            get { return reservationId; }
-            set { reservationId = value; }
+            get { return _reservationId; }
+            set { _reservationId = value; }
         }
         //public virtual ReservationModel ReservationModel { get; set; }
 
 
-        private int kapacity;
-        public int Kapacity
+        private int _capacity;
+        public int Capacity
         {
-            get { return kapacity; }
-            set { kapacity = value; }
+            get { return _capacity; }
+            set { _capacity = value; }
         }
 
-        private string name;
+        private string _name;
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
         private List<ReservationModel> availability = new List<ReservationModel>();
@@ -52,8 +52,8 @@ namespace CRUD.DataStructures.DataModel
 
         public TableModel(int kapacityInput, string nameInput)
         {
-            Kapacity = kapacityInput;
-            Name = nameInput;
+            _capacity = kapacityInput;
+            _name = nameInput;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CRUD.DataStructures.AttributeService
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (DateOnly.TryParse((string)value, out DateOnly parsedDate))
+            if (DateOnly.TryParse((string?)value, out DateOnly parsedDate))
             {
                 return ValidationResult.Success;
             }

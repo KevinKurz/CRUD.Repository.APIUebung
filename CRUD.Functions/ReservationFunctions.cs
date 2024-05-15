@@ -18,8 +18,8 @@ namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter> _reservationInterface;
-        public ReservationFunctions(IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter> reservationInterface)
+        private readonly IRepository<IReservationDto, QueryParameter, OptionsParameter> _reservationInterface;
+        public ReservationFunctions(IRepository<IReservationDto, QueryParameter, OptionsParameter> reservationInterface)
         {
             _reservationInterface = reservationInterface;
         }
@@ -92,7 +92,7 @@ namespace CRUD.Functions
             try
             {
                 QueryParameter queryParameter = new QueryParameter(tableId);
-                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                OptionsParameter optionsParameter = new OptionsParameter(req.Query["filter"], req.Query["sortBy"]);
 
                 List<ReservationDto> response = (List<ReservationDto>)_reservationInterface.GetAll(queryParameter, optionsParameter);
                 return new OkObjectResult(response);
@@ -121,7 +121,7 @@ namespace CRUD.Functions
         {
             try
             {
-                ReservationOptionsParameter optionsParameter = new ReservationOptionsParameter(req.Query["capacity"], req.Query["lastName"], req.Query["startTime"], req.Query["endTime"], req.Query["date"]);
+                OptionsParameter optionsParameter = new OptionsParameter(req.Query["filter"], req.Query["sortBy"]);
                 QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
 
                 ReservationDto response = (ReservationDto)_reservationInterface.GetById(queryParameter, optionsParameter);
@@ -129,7 +129,7 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex.Message);
+                return new NotFoundObjectResult(ex.Message);
             }
         }
 

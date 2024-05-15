@@ -1,4 +1,5 @@
 ﻿using CRUD.Core;
+using CRUD.Core.Filter;
 using CRUD.Core.QueryParams;
 using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
@@ -14,7 +15,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
         public ReservationRepositoryExpectedBehavior()
         {
             _helperClass = new MockConfigurator();
-            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object));
+            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object), new ReservationFilterService());
         }
 
         [Fact]
@@ -80,7 +81,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             //Arrange
             int tableId = 0;
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
-            ReservationOptionsParameter optionsParameter = new("", "", "", "", "");
+            OptionsParameter optionsParameter = new("", "");
             QueryParameter queryParameter = new QueryParameter(tableId);
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
@@ -97,7 +98,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             int reservationId = 0;
             ReservationModel listFiller = new ReservationModel(1, "test", "1:00", "4:00", "1.1.1001");
             QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
-            ReservationOptionsParameter optionsParameter = new("", "", "", "", "");
+            OptionsParameter optionsParameter = new("", "");
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
             ReservationDto shouldBeDto = Mapper.Map(listFiller);

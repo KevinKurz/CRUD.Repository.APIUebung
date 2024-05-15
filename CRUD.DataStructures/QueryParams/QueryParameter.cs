@@ -1,8 +1,6 @@
-﻿using CRUD.Core.Interfaces;
-
-namespace CRUD.Core.QueryParams
+﻿namespace CRUD.Core.QueryParams
 {
-    public class QueryParameter : IQueryParameter
+    public class QueryParameter
     {
         public QueryParameter() { }
         public QueryParameter(int tableId)

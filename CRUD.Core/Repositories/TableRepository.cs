@@ -3,25 +3,27 @@ using CRUD.Core.QueryParams;
 using CRUD.DataBank;
 using CRUD.DataStructures.DataModel;
 using CRUD.DataStructures.DTOs.TableDTO;
+using CRUD.Core.Filter;
 
 namespace CRUD.Core.Repositories
 {
-    public class TableRepository : IRepository<ITableDto, QueryParameter, TableOptionsParameter>
+    public class TableRepository : IRepository<ITableDto, QueryParameter, OptionsParameter>
     {
         private readonly IDataService<IModel> _jsonService;
         private readonly PathValidator _pathValidator;
-        public TableRepository(IDataService<IModel> jsonService, PathValidator pathValidator)
+        private readonly TableFilterService _tableFilterService;
+        public TableRepository(IDataService<IModel> jsonService, PathValidator pathValidator, TableFilterService tableFilterService)
         {
             _jsonService = jsonService;
             _pathValidator = pathValidator;
+            _tableFilterService = tableFilterService;
         }
 
         /// <summary>
         /// Transforms a List of <see cref="TableModel"/> to a List of <see cref="TableDto"/><br/>
-        /// Includes a <see cref="IOptionsParameter"/> for filtering
         /// </summary>
         /// <returns>List of <see cref="TableDto"/></returns>
-        public IEnumerable<ITableDto> GetAll(QueryParameter queryParameter, TableOptionsParameter optionsParameter)
+        public IEnumerable<ITableDto> GetAll(QueryParameter queryParameter, OptionsParameter optionsParameter)
         {
             List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
 
@@ -32,17 +34,19 @@ namespace CRUD.Core.Repositories
                 TableDto dto = Mapper.Map(model);
                 dtoList.Add(dto);
             }
+
+            dtoList = _tableFilterService.Filter(optionsParameter, dtoList);
+
             return dtoList;
         }
 
         /// <summary>
         /// Gets the mapped <see cref="TableDto"/> from the List of <see cref="TableModel"/> by the index <paramref name="tableId"/><br/>
-        /// Includes a <see cref="IOptionsParameter"/> for filtering
         /// </summary>
         /// <param name="tableId"></param>
         /// <returns><see cref="TableDto"/></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public ITableDto GetById(QueryParameter queryParameter, TableOptionsParameter optionsParameter)
+        public ITableDto GetById(QueryParameter queryParameter, OptionsParameter optionsParameter)
         {
             _pathValidator.IsPathParameterValide(queryParameter);
             int tableId = queryParameter.TableId;
@@ -66,10 +70,10 @@ namespace CRUD.Core.Repositories
             //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
             foreach (TableModel capacityChecker in _jsonService.LoadList())
             {
-                currentCapacity += capacityChecker.Kapacity;
+                currentCapacity += capacityChecker.Capacity;
             }
 
-            if (currentCapacity + model.Kapacity <= 50)
+            if (currentCapacity + model.Capacity <= 50)
             {
                 List<TableModel> tempList = (List<TableModel>)_jsonService.LoadList();
                 tempList.Add(model);
@@ -104,11 +108,11 @@ namespace CRUD.Core.Repositories
                 //Check if maximum capacity is not exceeded. Max capacity is 50 Places.
                 foreach (TableModel capacityChecker in tempList)
                 {
-                    currentCapacity += capacityChecker.Kapacity;
+                    currentCapacity += capacityChecker.Capacity;
                 }
 
                 //Model to be updated is considered in the summary of the whole capacity
-                if (currentCapacity + model.Kapacity - tempList[tableId].Kapacity <= 50)
+                if (currentCapacity + model.Capacity - tempList[tableId].Capacity <= 50)
                 {
                     tempList[tableId] = model;
                     _jsonService.SafeList(tempList);

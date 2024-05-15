@@ -5,35 +5,42 @@ namespace CRUD.DataStructures.DTOs.TableDTO
 {
     public class TableDto : ITableDto
     {
-        private int kapacity;
-        private string name;
+        private int _capacity;
+        private string? _name;
 
         [Required]
         [Range(2, 10)]
-        public int Kapacity
+        public int Capacity
         {
-            get { return kapacity; }
-            set { kapacity = value; }
+            get { return _capacity; }
+            set { _capacity = value; }
         }
 
         [Required]
-        public string Name
+        public string? Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return _name; }
+            set { _name = value; }
         }
 
-        private List<ReservationDto> availability = new List<ReservationDto>();
+        private List<ReservationDto> _availability = new List<ReservationDto>();
         public List<ReservationDto> Availability
         {
-            get { return availability; }
-            set { availability = value; }
+            get { return _availability; }
+            set { _availability = value; }
         }
 
-        public TableDto(int kapacityInput, string nameInput)
+        // For TableFilterService
+        public TableDto()
         {
-            Kapacity = kapacityInput;
-            Name = nameInput;
+            
+        }
+
+        // For Mapper
+        public TableDto(int capacityInput, string nameInput)
+        {
+            _capacity = capacityInput;
+            _name = nameInput;
         }
     }
 }

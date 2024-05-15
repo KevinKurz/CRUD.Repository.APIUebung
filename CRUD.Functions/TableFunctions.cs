@@ -16,8 +16,8 @@ namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly IRepository<ITableDto, QueryParameter, TableOptionsParameter> _tableInterface;
-        public TableFunctions(IRepository<ITableDto, QueryParameter, TableOptionsParameter> tableInterface)
+        private readonly IRepository<ITableDto, QueryParameter, OptionsParameter> _tableInterface;
+        public TableFunctions(IRepository<ITableDto, QueryParameter, OptionsParameter> tableInterface)
         {
             _tableInterface = tableInterface;
         }
@@ -38,7 +38,7 @@ namespace CRUD.Functions
         {
             try
             {
-                TableOptionsParameter optionsParameter = new TableOptionsParameter(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+                OptionsParameter optionsParameter = new OptionsParameter(req.Query["filter"], req.Query["sortBy"]);
                 QueryParameter queryParameter = new QueryParameter();
 
                 List<TableDto> response = (List<TableDto>)_tableInterface.GetAll(queryParameter, optionsParameter);
@@ -67,7 +67,7 @@ namespace CRUD.Functions
         {
             try
             {
-                TableOptionsParameter optionsParameter = new TableOptionsParameter(req.Query["capacity"], req.Query["name"], req.Query["availability"]);
+                OptionsParameter optionsParameter = new OptionsParameter(req.Query["filter"], req.Query["sortBy"]);
                 QueryParameter queryParameter = new QueryParameter(tableId);
 
                 TableDto response = (TableDto)_tableInterface.GetById(queryParameter, optionsParameter);
@@ -75,7 +75,7 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex.Message);
+                return new NotFoundObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
@@ -133,7 +133,7 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex.Message);
+                return new NotFoundObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
@@ -217,7 +217,7 @@ namespace CRUD.Functions
 
                     tableDto.IsValid();
 
-                    _tableInterface.UpdateById(queryParameter, tableDto);
+                    _tableInterface.UpdateById(queryParameter, tableDto); //UpdateWithId, wenn man die Id als Parameter übergibt 
 
                     return new OkResult();
                 }
@@ -228,7 +228,7 @@ namespace CRUD.Functions
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return new BadRequestObjectResult(ex.Message);
+                return new NotFoundObjectResult(ex.Message);
             }
             catch (Exception ex)
             {
