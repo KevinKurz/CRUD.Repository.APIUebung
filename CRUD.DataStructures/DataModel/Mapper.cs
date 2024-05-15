@@ -12,7 +12,7 @@ namespace CRUD.DataStructures.DataModel
         //Map from CreateReservationDto to Model
         public static ReservationModel Map(CreateReservationDto reservationDto)
         {
-            ReservationModel model = new ReservationModel(reservationDto.Kapacity, reservationDto.LastName, reservationDto.StartTime, reservationDto.EndTime, reservationDto.Date);
+            ReservationModel model = new ReservationModel(reservationDto.Capacity, reservationDto.LastName, reservationDto.StartTime, reservationDto.EndTime, reservationDto.Date);
             return model;
         }
 
@@ -35,21 +35,21 @@ namespace CRUD.DataStructures.DataModel
         //Map from Model to TableDto
         public static TableDto Map(TableModel tableModel)
         {
-            TableDto dto = new TableDto(tableModel.Kapacity, tableModel.Name);
+            TableDto dto = new TableDto(tableModel.Capacity, tableModel.Name);
             return dto;
         }
 
         //Map from CreateTableDto to Model
-        public static TableModel Map(CreateTableDto tableDto) 
+        public static TableModel Map(CreateTableDto tableDto)
         {
-            TableModel model = new TableModel(tableDto.Kapacity, tableDto.Name);
+            TableModel model = new TableModel(tableDto.Capacity, tableDto.Name);
             return model;
         }
 
         //Map from UpdateTableDto to Model
         public static TableModel Map(UpdateTableDto tableDto)
         {
-            TableModel model = new TableModel(tableDto.Kapacity, tableDto.Name );
+            TableModel model = new TableModel(tableDto.Capacity, tableDto.Name );
             return model;
         }
     }

@@ -17,7 +17,7 @@ namespace CRUD.DataStructures.AttributeService
             string comparisonValue = (string)validationContext.ObjectType.GetProperty(_comparisonProperty).GetValue(validationContext.ObjectInstance);
 
             // Reads the value of the property the attribute is attached to as a string and parse it to a TimeOnly
-            if (TimeOnly.TryParse(((string)value), out TimeOnly startTime) == false)
+            if (TimeOnly.TryParse(((string?)value), out TimeOnly startTime) == false)
             {
                 return new ValidationResult("Your input is not TimeOnly convertable");
             }

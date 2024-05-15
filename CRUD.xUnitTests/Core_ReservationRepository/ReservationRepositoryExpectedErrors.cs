@@ -1,4 +1,5 @@
 ﻿using CRUD.Core;
+using CRUD.Core.Filter;
 using CRUD.Core.QueryParams;
 using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
@@ -13,7 +14,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
         public ReservationRepositoryExpectedErrors()
         {
             _helperClass = new MockConfigurator();
-            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object)); // Crate a new instance of ReservationRepository with the "Fake-Jason-Service-class"
+            _fakeRepo = new ReservationRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object), new ReservationFilterService()); // Crate a new instance of ReservationRepository with the "Fake-Jason-Service-class"
         }
 
         [Fact]

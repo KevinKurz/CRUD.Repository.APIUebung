@@ -5,57 +5,63 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
 {
     public class ReservationDto : IReservationDto
     {
-        private int kapacity;
-        private string? lastName;
-        private string? startTime;
-        private string? endTime;
-        private string? date;
+        private int _capacity;
+        private string? _lastName;
+        private string? _startTime;
+        private string? _endTime;
+        private string? _date;
 
         [Range(1, 10)]
-        public int Kapacity
+        public int Capacity
         {
-            get { return kapacity; }
-            set { kapacity = value; }
+            get { return _capacity; }
+            set { _capacity = value; }
         }
 
         [Required]
         [MaxLength(20)]
         public string? LastName
         {
-            get { return lastName; }
-            set { lastName = value; }
+            get { return _lastName; }
+            set { _lastName = value; }
         }
 
         [Required]
         [EndtimeEarlierThanStarttime("EndTime")]
-        public string StartTime
+        public string? StartTime
         {
-            get { return startTime; }
-            set { startTime = value; }
+            get { return _startTime; }
+            set { _startTime = value; }
         }
 
         [Required]
-        public string EndTime
+        public string? EndTime
         {
-            get { return endTime; }
-            set { endTime = value; }
+            get { return _endTime; }
+            set { _endTime = value; }
         }
 
         [Required]
         [DataType(DataType.Date)]
         [DateValidation()]
-        public string Date
+        public string? Date
         {
-            get { return date; }
-            set { date = value; }
+            get { return _date; }
+            set { _date = value; }
         }
+
+        public ReservationDto()
+        {
+
+        }
+
         public ReservationDto(int kapacityInput, string lastnameInput, string startTimeInput, string endTimeinput, string dateInput)
         {
-            kapacity = kapacityInput;
-            lastName = lastnameInput;
-            startTime = startTimeInput;
-            endTime = endTimeinput;
-            date = dateInput;
+            _capacity = kapacityInput;
+            _lastName = lastnameInput;
+            _startTime = startTimeInput;
+            _endTime = endTimeinput;
+            _date = dateInput;
         }
     }
 }

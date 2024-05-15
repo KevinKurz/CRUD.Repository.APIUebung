@@ -1,4 +1,5 @@
 ﻿using CRUD.Core;
+using CRUD.Core.Filter;
 using CRUD.Core.QueryParams;
 using CRUD.Core.Repositories;
 using CRUD.DataStructures.DTOs.TableDTO;
@@ -9,11 +10,10 @@ namespace CRUD.xUnitTests.Core_TableRepository
     {
         private readonly TableRepository _fakeRepo;
         private readonly MockConfigurator _helperClass;
-
         public TableRepositoryExpectedErrors()
         {
             _helperClass = new MockConfigurator();
-            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object));
+            _fakeRepo = new TableRepository(_helperClass.MockserviceForDataservice().Object, new PathValidator(_helperClass.MockserviceForDataservice().Object), new TableFilterService());
         }
 
         [Fact]

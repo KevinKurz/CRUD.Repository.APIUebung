@@ -9,6 +9,7 @@ using CRUD.Core.Interfaces;
 using CRUD.Core.Repositories;
 using CRUD.Core.QueryParams;
 using CRUD.Core;
+using CRUD.Core.Filter;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -17,10 +18,12 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddSingleton<IRepository<IReservationDto, QueryParameter, ReservationOptionsParameter>, ReservationRepository>();
-        services.AddSingleton<IRepository<ITableDto, QueryParameter, TableOptionsParameter>, TableRepository>();
+        services.AddSingleton<IRepository<IReservationDto, QueryParameter, OptionsParameter>, ReservationRepository>();
+        services.AddSingleton<IRepository<ITableDto, QueryParameter, OptionsParameter>, TableRepository>();
         services.AddSingleton<IDataService<IModel>, DataService>();
         services.AddSingleton<PathValidator>();
+        services.AddSingleton<TableFilterService>();
+        services.AddSingleton<ReservationFilterService>();
     })
     .Build();
 
