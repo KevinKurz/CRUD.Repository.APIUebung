@@ -50,9 +50,9 @@ namespace CRUD.DataStructures.DataModel
             set { availability = value; }
         }
 
-        public TableModel(int kapacityInput, string nameInput)
+        public TableModel(int capacityInput, string nameInput)
         {
-            _capacity = kapacityInput;
+            _capacity = capacityInput;
             _name = nameInput;
         }
     }

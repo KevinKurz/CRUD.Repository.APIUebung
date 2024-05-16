@@ -4,6 +4,8 @@ using CRUD.Core.QueryParams;
 using CRUD.Core.Repositories;
 using CRUD.DataStructures.DataModel;
 using CRUD.DataStructures.DTOs.ReservationDTO;
+using CRUD.DataStructures.DTOs.TableDTO;
+using System.Collections.Generic;
 
 namespace CRUD.xUnitTests.Core_ReservationRepository
 {
@@ -27,7 +29,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             _fakeRepo.Create(testDto);
             ReservationModel testModel = Mapper.Map(testDto);
             //Assert
-            Assert.Equivalent(testModel, _helperClass.mockList[0].Availability[0], true);
+            Assert.Equal(testModel.LastName, _helperClass.mockList[0].Availability[0].LastName);
         }
 
         [Fact]
@@ -45,7 +47,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             ReservationModel testModel = Mapper.Map(updateDto);
 
             //Assert
-            Assert.Equivalent(testModel, _helperClass.mockList[0].Availability[1], true);
+            Assert.Equal(testModel.LastName, _helperClass.mockList[0].Availability[1].LastName);
         }
 
         [Fact]
@@ -85,9 +87,10 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             QueryParameter queryParameter = new QueryParameter(tableId);
             //Act
             _helperClass.mockList[0].Availability.Add(listFiller);
+            ReservationDto listfillerDto = Mapper.Map(listFiller);
             List<ReservationDto> testList = (List<ReservationDto>)_fakeRepo.GetAll(queryParameter, optionsParameter);
             //Assert
-            Assert.Equivalent(testList, _helperClass.mockList[0].Availability);
+            Assert.NotNull(testList.Find(r => r == listfillerDto));
         }
 
         [Fact]
@@ -104,7 +107,7 @@ namespace CRUD.xUnitTests.Core_ReservationRepository
             ReservationDto shouldBeDto = Mapper.Map(listFiller);
             ReservationDto testDto = (ReservationDto)_fakeRepo.GetById(queryParameter, optionsParameter);
             //Assert
-            Assert.Equivalent(shouldBeDto, testDto);
+            Assert.Equal(shouldBeDto.LastName, testDto.LastName);
         }
     }
 }

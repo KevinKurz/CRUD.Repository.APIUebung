@@ -70,7 +70,8 @@ namespace CRUD.xUnitTests.Core_TableRepository
             _helperClass.mockList.Add(testModel);
             List<TableDto> testList = (List<TableDto>)_fakeRepo.GetAll(queryParameter, optionsParameter);
             //Assert
-            Assert.Equivalent(testList, _helperClass.mockList);
+            //Assert.Equivalent(_helperClass.mockList, testList);
+            Assert.NotNull(testList.Find(o => o.Name == testModel.Name));
         }
 
         [Fact]

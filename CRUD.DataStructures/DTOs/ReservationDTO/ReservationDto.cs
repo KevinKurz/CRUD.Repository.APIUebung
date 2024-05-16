@@ -50,18 +50,46 @@ namespace CRUD.DataStructures.DTOs.ReservationDTO
             set { _date = value; }
         }
 
+        //For filter
         public ReservationDto()
         {
 
         }
 
-        public ReservationDto(int kapacityInput, string lastnameInput, string startTimeInput, string endTimeinput, string dateInput)
+        public ReservationDto(int kapacityInput, string? lastnameInput, string? startTimeInput, string? endTimeinput, string? dateInput)
         {
             _capacity = kapacityInput;
             _lastName = lastnameInput;
             _startTime = startTimeInput;
             _endTime = endTimeinput;
             _date = dateInput;
+        }
+
+        // Operator for Unittest
+        public static bool operator ==(ReservationDto reservationDto1, ReservationDto reservationDto2)
+        {
+            if (reservationDto1.Date == reservationDto2.Date && 
+                reservationDto1.Capacity == reservationDto2.Capacity && 
+                reservationDto1.StartTime == reservationDto2.StartTime && 
+                reservationDto1.EndTime == reservationDto2.EndTime && 
+                reservationDto1.LastName == reservationDto2.LastName)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool operator !=(ReservationDto reservationDto1, ReservationDto reservationDto2)
+        {
+            if (reservationDto1.Date != reservationDto2.Date ||
+                reservationDto1.Capacity != reservationDto2.Capacity ||
+                reservationDto1.StartTime != reservationDto2.StartTime ||
+                reservationDto1.EndTime != reservationDto2.EndTime ||
+                reservationDto1.LastName != reservationDto2.LastName)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
