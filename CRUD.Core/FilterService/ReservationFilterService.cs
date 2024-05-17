@@ -1,7 +1,7 @@
 ﻿using CRUD.Core.QueryParams;
 using CRUD.DataStructures.DTOs.ReservationDTO;
 
-namespace CRUD.Core.Filter
+namespace CRUD.Core.FilterService
 {
     public class ReservationFilterService
     {

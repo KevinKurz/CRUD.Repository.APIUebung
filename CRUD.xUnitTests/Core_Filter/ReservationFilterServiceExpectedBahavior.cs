@@ -1,7 +1,7 @@
 ﻿using CRUD.DataStructures.DTOs.ReservationDTO;
-using CRUD.Core.Filter;
 using CRUD.Core.QueryParams;
 using FluentAssertions;
+using CRUD.Core.FilterService;
 
 namespace CRUD.xUnitTests.Core_Filter
 {

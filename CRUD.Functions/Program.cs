@@ -10,6 +10,7 @@ using CRUD.Core.Repositories;
 using CRUD.Core.QueryParams;
 using CRUD.Core;
 using CRUD.Core.Filter;
+using CRUD.Core.FilterService;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()

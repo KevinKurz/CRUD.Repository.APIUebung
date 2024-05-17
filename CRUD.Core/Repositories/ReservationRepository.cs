@@ -4,7 +4,7 @@ using CRUD.DataStructures.DTOs.TableDTO;
 using CRUD.DataStructures.DataModel;
 using CRUD.Core.Interfaces;
 using CRUD.Core.QueryParams;
-using CRUD.Core.Filter;
+using CRUD.Core.FilterService;
 
 namespace CRUD.Core.Repositories
 {

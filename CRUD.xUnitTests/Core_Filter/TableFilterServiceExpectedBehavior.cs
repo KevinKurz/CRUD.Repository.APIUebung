@@ -1,6 +1,5 @@
-﻿using CRUD.Core.Filter;
+﻿using CRUD.Core.FilterService;
 using CRUD.Core.QueryParams;
-using CRUD.DataStructures.DTOs.ReservationDTO;
 using CRUD.DataStructures.DTOs.TableDTO;
 using FluentAssertions;
 
