@@ -37,10 +37,28 @@ namespace CRUD.DataStructures.DTOs.TableDTO
         }
 
         // For Mapper
-        public TableDto(int capacityInput, string nameInput)
+        public TableDto(int capacityInput, string? nameInput)
         {
             _capacity = capacityInput;
             _name = nameInput;
+        }
+
+        public static bool operator ==(TableDto table1, TableDto table2)
+        {
+            if(table1.Capacity == table2.Capacity && table1.Name == table2.Name) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool operator !=(TableDto table1, TableDto table2)
+        {
+            if (table1.Capacity != table2.Capacity  || table1.Name != table2.Name)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
