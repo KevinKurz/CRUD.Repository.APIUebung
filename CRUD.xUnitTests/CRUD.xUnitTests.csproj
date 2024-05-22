@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -25,9 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CRUD.Core\CRUD.Core.csproj" />
-    <ProjectReference Include="..\CRUD.DataBank\CRUD.DataBank.csproj" />
-    <ProjectReference Include="..\CRUD.DataStructures\CRUD.DataStructures.csproj" />
+    <ProjectReference Include="..\CRUD.Repository\CRUD.Repository.csproj" />
   </ItemGroup>
 
 </Project>

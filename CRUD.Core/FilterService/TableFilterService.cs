@@ -1,5 +1,5 @@
-﻿using CRUD.Core.QueryParams;
-using CRUD.DataStructures.DTOs.TableDTO;
+﻿using CRUD.Contracts.DTOs.TableDto;
+using CRUD.Contracts.QueryParams;
 
 namespace CRUD.Core.FilterService
 {
@@ -27,7 +27,7 @@ namespace CRUD.Core.FilterService
             }
 
             List<TableDto> filteredList = new List<TableDto>();
-            switch(filter)
+            switch (filter)
             {
                 case "capacity":
                     foreach (TableDto tableDto in tempList)
@@ -38,11 +38,11 @@ namespace CRUD.Core.FilterService
                         };
                         filteredList.Add(capacityDto);
                     }
-                    if(sortBy == sortAsc)
+                    if (sortBy == sortAsc)
                     {
                         filteredList = filteredList.OrderBy(c => c.Capacity).ToList();
                     }
-                    else if(sortBy == sortDsc)
+                    else if (sortBy == sortDsc)
                     {
                         filteredList = filteredList.OrderByDescending(c => c.Capacity).ToList();
                     }

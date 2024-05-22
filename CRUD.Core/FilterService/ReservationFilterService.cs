@@ -1,5 +1,5 @@
-﻿using CRUD.Core.QueryParams;
-using CRUD.DataStructures.DTOs.ReservationDTO;
+﻿using CRUD.Contracts.DTOs.ReservationDto;
+using CRUD.Contracts.QueryParams;
 
 namespace CRUD.Core.FilterService
 {

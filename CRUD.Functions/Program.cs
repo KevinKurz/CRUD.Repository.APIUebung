@@ -1,16 +1,17 @@
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CRUD.DataStructures.DTOs.TableDTO;
-using CRUD.DataStructures.DTOs.ReservationDTO;
-using CRUD.DataBank;
-using CRUD.DataStructures.DataModel;
-using CRUD.Core.Interfaces;
-using CRUD.Core.Repositories;
-using CRUD.Core.QueryParams;
-using CRUD.Core;
-using CRUD.Core.Filter;
+using CRUD.Repository.Interfaces;
+using CRUD.Repository.Repositories;
+using CRUD.Contracts.QueryParams;
 using CRUD.Core.FilterService;
+using CRUD.Core.DataService;
+using CRUD.Core;
+using CRUD.Contracts.Queries.ReservationQuery;
+using CRUD.Contracts.Queries.TableQuery;
+using CRUD.Contracts.DTOs.ReservationDto;
+using CRUD.Contracts.DTOs.TableDto;
+using CRUD.Core.DataModelService;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
@@ -19,8 +20,8 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddSingleton<IRepository<IReservationDto, QueryParameter, OptionsParameter>, ReservationRepository>();
-        services.AddSingleton<IRepository<ITableDto, QueryParameter, OptionsParameter>, TableRepository>();
+        services.AddSingleton<IRepository<IReservationDto, IReservationQuery, QueryParameter, OptionsParameter>, ReservationRepository>();
+        services.AddSingleton<IRepository<ITableDto, ITableQuery, QueryParameter, OptionsParameter>, TableRepository>();
         services.AddSingleton<IDataService<IModel>, DataService>();
         services.AddSingleton<PathValidator>();
         services.AddSingleton<TableFilterService>();

@@ -1,6 +1,6 @@
-﻿using CRUD.Core;
-using CRUD.Core.QueryParams;
-using CRUD.DataStructures.DataModel;
+﻿using CRUD.Contracts.QueryParams;
+using CRUD.Core.DataModelService;
+using CRUD.Core;
 
 namespace CRUD.xUnitTests.Core_PathValidator
 {
