@@ -1,6 +1,6 @@
-﻿using CRUD.Core.QueryParams;
-using CRUD.DataBank;
-using CRUD.DataStructures.DataModel;
+﻿using CRUD.Contracts.QueryParams;
+using CRUD.Core.DataModelService;
+using CRUD.Core.DataService;
 
 namespace CRUD.Core
 {

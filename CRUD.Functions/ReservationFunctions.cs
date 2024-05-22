@@ -9,17 +9,18 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Microsoft.Azure.Functions.Worker;
 using System.ComponentModel.DataAnnotations;
-using CRUD.DataStructures.DTOs.ReservationDTO;
-using CRUD.DataStructures.AttributeService;
-using CRUD.Core.Interfaces;
-using CRUD.Core.QueryParams;
+using CRUD.Contracts.AttributeService;
+using CRUD.Repository.Interfaces;
+using CRUD.Contracts.Queries.ReservationQuery;
+using CRUD.Contracts.QueryParams;
+using CRUD.Contracts.DTOs.ReservationDto;
 
 namespace CRUD.Functions
 {
     public class ReservationFunctions
     {
-        private readonly IRepository<IReservationDto, QueryParameter, OptionsParameter> _reservationInterface;
-        public ReservationFunctions(IRepository<IReservationDto, QueryParameter, OptionsParameter> reservationInterface)
+        private readonly IRepository<IReservationDto, IReservationQuery, QueryParameter, OptionsParameter> _reservationInterface;
+        public ReservationFunctions(IRepository<IReservationDto,IReservationQuery, QueryParameter, OptionsParameter> reservationInterface)
         {
             _reservationInterface = reservationInterface;
         }
@@ -36,7 +37,7 @@ namespace CRUD.Functions
         [Function("POST_Reservation")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Reservation" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateReservationDto), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateReservationQuery), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.Created, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.ResetContent, Description = "Paremeters were correct, but table is already occupied")]
@@ -52,7 +53,7 @@ namespace CRUD.Functions
                 }
                 else
                 {
-                    CreateReservationDto reservationDto = JsonConvert.DeserializeObject<CreateReservationDto>(requestBody);
+                    CreateReservationQuery reservationDto = JsonConvert.DeserializeObject<CreateReservationQuery>(requestBody);
                     reservationDto.IsValid();
                     _reservationInterface.Create(reservationDto);
 
@@ -200,7 +201,7 @@ namespace CRUD.Functions
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "tableId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
         [OpenApiParameter(name: "reservationId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateReservationDto), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateReservationQuery), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Paremeters were given incorrectly")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.ResetContent, Description = "Paremeters were correct, but table is already occupied")]
@@ -216,7 +217,7 @@ namespace CRUD.Functions
                 else
                 {
                     QueryParameter queryParameter = new QueryParameter(tableId, reservationId);
-                    UpdateReservationDto reservationDto = JsonConvert.DeserializeObject<UpdateReservationDto>(requestBody);
+                    UpdateReservationQuery reservationDto = JsonConvert.DeserializeObject<UpdateReservationQuery>(requestBody);
 
                     reservationDto.IsValid();
 

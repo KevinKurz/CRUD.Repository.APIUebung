@@ -1,4 +1,3 @@
-using CRUD.DataStructures.DTOs.TableDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -7,17 +6,19 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using Newtonsoft.Json;
-using CRUD.DataStructures.AttributeService;
-using CRUD.Core.QueryParams;
+using CRUD.Contracts.AttributeService;
 using AuthorizationLevel = Microsoft.Azure.Functions.Worker.AuthorizationLevel;
-using CRUD.Core.Interfaces;
+using CRUD.Contracts.QueryParams;
+using CRUD.Contracts.DTOs.TableDto;
+using CRUD.Contracts.Queries.TableQuery;
+using CRUD.Repository.Interfaces;
 
 namespace CRUD.Functions
 {
     public class TableFunctions
     {
-        private readonly IRepository<ITableDto, QueryParameter, OptionsParameter> _tableInterface;
-        public TableFunctions(IRepository<ITableDto, QueryParameter, OptionsParameter> tableInterface)
+        private readonly IRepository<ITableDto, ITableQuery, QueryParameter, OptionsParameter> _tableInterface;
+        public TableFunctions(IRepository<ITableDto, ITableQuery, QueryParameter, OptionsParameter> tableInterface)
         {
             _tableInterface = tableInterface;
         }
@@ -125,9 +126,9 @@ namespace CRUD.Functions
         {
             try
             {
-                QueryParameter pathParameter = new QueryParameter(tableId);
+                QueryParameter queryParameter = new QueryParameter(tableId);
 
-                _tableInterface.DeleteById(pathParameter);
+                _tableInterface.DeleteById(queryParameter);
 
                 return new OkResult();
             }
@@ -151,7 +152,7 @@ namespace CRUD.Functions
         /// </returns>
         [Function("POST_Table")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Table" })]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateTableDto), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(CreateTableQuery), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
@@ -167,7 +168,7 @@ namespace CRUD.Functions
                 }
                 else
                 {
-                    CreateTableDto tableDto = JsonConvert.DeserializeObject<CreateTableDto>(requestBody);
+                    CreateTableQuery tableDto = JsonConvert.DeserializeObject<CreateTableQuery>(requestBody);
 
                     tableDto.IsValid();
                     _tableInterface.Create(tableDto);
@@ -196,7 +197,7 @@ namespace CRUD.Functions
         [Function("PUT_Table")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Table" })]
         [OpenApiParameter(name: "tableId", Required = true, Type = typeof(int), In = ParameterLocation.Path)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateTableDto), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateTableQuery), Required = true, Description = "Date and Time properties must be **DateOnly/TimeOnly** convertable")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The OK response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Something unexpected happend")]
@@ -213,7 +214,7 @@ namespace CRUD.Functions
                 else
                 {
                     QueryParameter queryParameter = new QueryParameter(tableId);
-                    UpdateTableDto tableDto = JsonConvert.DeserializeObject<UpdateTableDto>(requestBody);
+                    UpdateTableQuery tableDto = JsonConvert.DeserializeObject<UpdateTableQuery>(requestBody);
 
                     tableDto.IsValid();
 

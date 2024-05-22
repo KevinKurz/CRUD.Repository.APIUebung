@@ -1,5 +1,5 @@
-﻿using CRUD.DataBank;
-using CRUD.DataStructures.DataModel;
+﻿using CRUD.Core.DataModelService;
+using CRUD.Core.DataService;
 using Moq;
 
 namespace CRUD.xUnitTests
