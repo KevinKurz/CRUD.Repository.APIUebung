@@ -168,10 +168,10 @@ namespace CRUD.Functions
                 }
                 else
                 {
-                    CreateTableQuery tableDto = JsonConvert.DeserializeObject<CreateTableQuery>(requestBody);
+                    CreateTableQuery tableQuery = JsonConvert.DeserializeObject<CreateTableQuery>(requestBody);
 
-                    tableDto.IsValid();
-                    _tableInterface.Create(tableDto);
+                    tableQuery.IsValid();
+                    _tableInterface.Create(tableQuery);
 
                     return new StatusCodeResult(StatusCodes.Status201Created);
                 }
@@ -214,11 +214,11 @@ namespace CRUD.Functions
                 else
                 {
                     QueryParameter queryParameter = new QueryParameter(tableId);
-                    UpdateTableQuery tableDto = JsonConvert.DeserializeObject<UpdateTableQuery>(requestBody);
+                    UpdateTableQuery tableQuery = JsonConvert.DeserializeObject<UpdateTableQuery>(requestBody);
 
-                    tableDto.IsValid();
+                    tableQuery.IsValid();
 
-                    _tableInterface.UpdateById(queryParameter, tableDto); //UpdateWithId, wenn man die Id als Parameter übergibt 
+                    _tableInterface.UpdateById(queryParameter, tableQuery); //UpdateWithId, wenn man die Id als Parameter übergibt 
 
                     return new OkResult();
                 }

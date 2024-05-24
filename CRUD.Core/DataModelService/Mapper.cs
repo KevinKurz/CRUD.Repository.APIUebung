@@ -40,14 +40,14 @@ namespace CRUD.Core.DataModelService
             return dto;
         }
 
-        //Map from CreateTableDto to Model
+        //Map from CreateTableDQuery to Model
         public static TableModel Map(CreateTableQuery tableDto)
         {
             TableModel model = new TableModel(tableDto.Capacity, tableDto.Name);
             return model;
         }
 
-        //Map from UpdateTableDto to Model
+        //Map from UpdateTableQuery to Model
         public static TableModel Map(UpdateTableQuery tableDto)
         {
             TableModel model = new TableModel(tableDto.Capacity, tableDto.Name);
