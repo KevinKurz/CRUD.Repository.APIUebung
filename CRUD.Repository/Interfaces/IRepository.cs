@@ -1,6 +1,11 @@
-﻿namespace CRUD.Repository.Interfaces
+﻿using CRUD.Contracts.DTOs;
+using CRUD.Contracts.Queries;
+
+namespace CRUD.Repository.Interfaces
 {
-    public interface IRepository<DTO, Query, QueryParameter, OptionsParameter> 
+    public interface IRepository<DTO, Query, QueryParameter, OptionsParameter>
+        where DTO : IDto
+        where Query : IQuery
     {
         /// <summary>
         /// </summary>
