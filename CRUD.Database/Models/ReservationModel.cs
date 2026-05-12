@@ -22,8 +22,6 @@
             set { table = value; }
         }
 
-        public int 
-
         public int Kapacity
         {
             get { return kapacity; }
